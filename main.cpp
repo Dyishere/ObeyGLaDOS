@@ -15,6 +15,9 @@ vector<Robot> robots;
 
 
 
+
+using namespace std;
+
 bool readUntilOK() {
 
     char line[1024];
@@ -22,7 +25,7 @@ bool readUntilOK() {
         if (line[0] == 'O' && line[1] == 'K') {
             return true;
         }
-        // 将line保存到log.txt当中
+
     }
     return false;
 }
