@@ -76,6 +76,8 @@ void init(){
 
 int main() {
 
+    init();
+
 
     readUntilOK();
     puts("OK");
@@ -85,10 +87,12 @@ int main() {
     int money;
     int workBenchNum = 0;
     while (scanf("%d", &frameID) != EOF) {
+
         scanf("%d", &money);
         scanf("%d", &workBenchNum);
         // 如果工作台vector为空，那么说明是第一帧输入，需要初始化
         if(workbenchs.empty()) {
+
             for(int i = 0; i < workBenchNum; i++) {
                 Workbench workbench = Workbench();
                 workbench.workbenchId = i;
@@ -99,6 +103,7 @@ int main() {
         char line[1024];
         int tmp_workbenchType , tmp_remainProductTime , tmp_materialGridStatus , tmp_productGridStatus;
         double tmp_workBenchX , tmp_workBenchY;
+
         for(int i = 0; i < workBenchNum; i ++) {   
             scanf("%d %lf %lf %d %d %d" , &tmp_workbenchType , &tmp_workBenchX , &tmp_workBenchY , &tmp_remainProductTime , &tmp_materialGridStatus , &tmp_productGridStatus);
 
@@ -109,8 +114,22 @@ int main() {
             workbenchs[i].materialGridStatus = tmp_materialGridStatus;
             workbenchs[i].productGridStatus = tmp_productGridStatus;
             workbenchs[i].workbenchId = i;
+
+            // 输出读入的7个数据
+            //cout << tmp_workbenchType << " " << tmp_workBenchX << " " << tmp_workBenchY << " " << tmp_remainProductTime << " " << tmp_materialGridStatus << " " << tmp_productGridStatus << endl;
         }
 
+        //cout << "workbench over ......" << endl;
+
+
+            int workbenchId;
+            int itemType;
+            double timeValue;
+            double collisionValue;
+            double angleSpeed;
+            double lineSpeed_x , lineSpeed_y;
+            double towards;
+            double x , y;
         // 再读取4个机器人信息
         for(int i = 0;i < 4;i ++) {
             // 读取第一个机器人信息
@@ -124,14 +143,6 @@ int main() {
             朝向
             坐标
             */
-            int workbenchId;
-            int itemType;
-            double timeValue;
-            double collisionValue;
-            double angleSpeed;
-            double lineSpeed_x , lineSpeed_y;
-            double towards;
-            double x , y;
             scanf("%d %d %lf %lf %lf %lf %lf %lf %lf %lf", &workbenchId, &itemType, &timeValue, &collisionValue, &angleSpeed, &lineSpeed_x, &lineSpeed_y, &towards, &x , &y);
                 robots[i].currentWorkbenchId = workbenchId;
                 robots[i].itemType = itemType;
@@ -142,7 +153,11 @@ int main() {
                 robots[i].v_y = lineSpeed_y;
                 robots[i].towards = towards;
                 robots[i].x = x;
-                robots[i].y = y;       
+                robots[i].y = y;  
+
+                //cout << "i = " << i << " over ..." << endl;    
+                // 将输入的十个数字都输出
+                //cout << workbenchId << " " << itemType << " " << timeValue << " " << collisionValue << " " << angleSpeed << " " << lineSpeed_x << " " << lineSpeed_y << " " << towards << " " << x << " " << y << endl; 
         }
 
        
