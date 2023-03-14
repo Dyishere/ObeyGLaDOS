@@ -1,0 +1,26 @@
+[
+{
+  "directory": "C:/Users/Administrator/Desktop/WindowsRelease/build",
+  "command": "D:\\programs\\mingw\\bin\\g++.exe   -g -std=gnu++1z -o CMakeFiles\\main.dir\\Robot.cpp.obj -c C:\\Users\\Administrator\\Desktop\\WindowsRelease\\Robot.cpp",
+  "file": "C:/Users/Administrator/Desktop/WindowsRelease/Robot.cpp",
+  "output": "CMakeFiles/main.dir/Robot.cpp.obj"
+},
+{
+  "directory": "C:/Users/Administrator/Desktop/WindowsRelease/build",
+  "command": "D:\\programs\\mingw\\bin\\g++.exe   -g -std=gnu++1z -o CMakeFiles\\main.dir\\Task.cpp.obj -c C:\\Users\\Administrator\\Desktop\\WindowsRelease\\Task.cpp",
+  "file": "C:/Users/Administrator/Desktop/WindowsRelease/Task.cpp",
+  "output": "CMakeFiles/main.dir/Task.cpp.obj"
+},
+{
+  "directory": "C:/Users/Administrator/Desktop/WindowsRelease/build",
+  "command": "D:\\programs\\mingw\\bin\\g++.exe   -g -std=gnu++1z -o CMakeFiles\\main.dir\\Workbench.cpp.obj -c C:\\Users\\Administrator\\Desktop\\WindowsRelease\\Workbench.cpp",
+  "file": "C:/Users/Administrator/Desktop/WindowsRelease/Workbench.cpp",
+  "output": "CMakeFiles/main.dir/Workbench.cpp.obj"
+},
+{
+  "directory": "C:/Users/Administrator/Desktop/WindowsRelease/build",
+  "command": "D:\\programs\\mingw\\bin\\g++.exe   -g -std=gnu++1z -o CMakeFiles\\main.dir\\main.cpp.obj -c C:\\Users\\Administrator\\Desktop\\WindowsRelease\\main.cpp",
+  "file": "C:/Users/Administrator/Desktop/WindowsRelease/main.cpp",
+  "output": "CMakeFiles/main.dir/main.cpp.obj"
+}
+]

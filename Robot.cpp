@@ -1,0 +1,158 @@
+#include <queue>
+#include <vector>
+#include <string>
+#include <cmath>
+#include "Task.cpp"
+#include "Robot.h"
+
+
+void Robot::output() {
+        printf("forward %d %lf\n", robotId, this->forwardSpeed);
+        printf("rotate %d %lf\n", robotId, this->rotateSpeed);
+
+        // 如果动作不为空，那么输出动作
+        if(!actions.empty()) {
+            for(int i = 0;i < actions.size();i++)
+                printf("%s %d\n", actions[i].c_str() , robotId);
+            actions.clear();
+        }
+
+    }
+
+void Robot::setTarget(double tmp_x, double tmp_y) {
+        target_x = tmp_x;
+        target_y = tmp_y; 
+        // 计算机器人与目标点之间的距离和角度
+        double dx = target_x - x;
+        double dy = target_y - y;
+        double distance = std::sqrt(dx*dx + dy*dy);
+        double angle = std::atan2(dy, dx);
+        
+        // 如果身处工作台，那么停止
+        if(this->currentWorkbenchId == targetWorkbenchId) {
+            return ;
+        }
+
+        // 计算机器人需要旋转的角度和方向
+        double error_angle = angle - towards;
+
+        while (error_angle > M_PI) {
+            error_angle -= 2 * M_PI;
+        }
+        while (error_angle < -M_PI) {
+            error_angle += 2 * M_PI;
+        }
+
+        int sign = (error_angle > 0) ? 1 : -1;
+        
+        // 如果机器人转到正确的方向，那么直接前进
+        if (std::abs(error_angle) < 0.01) {
+            rotateSpeed = 0;
+             //如果距离超过10m，那么速度为6m/s
+            if(distance >= 10)
+                forwardSpeed = 6;
+            //如果距离在5m到10m之间，那么速度为6m/s
+            else if(distance >= 5)
+                forwardSpeed = 6;
+            //如果距离在2m到5m之间，那么速度为6m/s
+            else if(distance >= 2)
+                forwardSpeed = 6;
+            //如果距离在1m到2m之间，那么速度为4m/s
+            else if(distance >= 1)
+                forwardSpeed = 6;
+            else forwardSpeed = 4;
+        }
+        // 否则旋转
+        else {
+            forwardSpeed = 0;
+            
+            if(abs(error_angle) >= 2)
+                rotateSpeed = 3*sign;
+            else if(abs(error_angle) >= 1)
+                rotateSpeed = 3*sign;
+            else if(abs(error_angle) >= 0.5)
+                rotateSpeed = 2*sign;
+            else if(abs(error_angle) >= 0.1)
+                rotateSpeed = 1*sign;
+            else
+                rotateSpeed = 1*sign;
+        }
+        
+
+
+        // 限制前进速度和旋转速度的范围
+        if (forwardSpeed > 6.0) {
+            forwardSpeed = 6.0;
+        }
+        if (forwardSpeed < -2.0) {
+            forwardSpeed = -2.0;
+        }
+        if (rotateSpeed > 1.0 * M_PI) {
+            rotateSpeed = 1.0 * M_PI;
+        }
+        if (rotateSpeed < -1.0 * M_PI) {
+            rotateSpeed = -1.0 * M_PI;
+        }
+    }
+
+
+    // 设置目标工作台及要完成的任务
+void Robot::setTargetWorkbench(int workbenchId , double workbench_x ,double workbench_y, std::vector<std::string> commands) {
+        this->targetWorkbenchId = workbenchId;
+        this->commands.assign(commands.begin(), commands.end());
+        this->targetWorkbench_x = workbench_x;
+        this->targetWorkbench_y = workbench_y;
+        /*
+        通过判断机器人当前所处的工作台id来判断是否到达目标工作台
+        如果到达目标工作台，那么执行指令并将目标工作台id设置为-1表示已经完成当前任务
+        */
+       if(currentWorkbenchId == workbenchId) {
+            // 执行指令
+            for(int i = 0 ; i < commands.size() ; i++) {
+
+                // 执行指令就是将commands中的指令加入到actions中
+                // 然后output函数中会输出actions中的指令
+                actions.push_back(commands[i]);
+
+            }
+            // 将目标工作台id设置为-1表示已经完成当前任务
+            targetWorkbenchId = -1;
+        }
+        
+        setTarget(workbench_x ,  workbench_y);
+
+        
+    };
+
+
+    // 每次检查当前是否正在执行任务
+    // 如果正在执行任务，那么继续执行任务
+    // 如果没有正在执行任务，那么执行下一个任务,从任务队列当中取出一个任务
+    // 如果任务队列为空，那么停在原地
+void Robot::doWork() {
+
+        // 如果没有执行命令
+        if(targetWorkbenchId == -1) {
+            // 如果任务队列不为空
+            if(!tasks.empty()) {
+                
+                //cout << "do work...." << endl;
+                // 取出任务队列的第一个任务
+                // 将该任务的目标工作台设置为当前目标工作台
+                Task tmp_task = tasks.front();
+                tasks.pop();
+                setTargetWorkbench(tmp_task.workbenchId , tmp_task.workbench_x ,tmp_task.workbench_y , tmp_task.commands);
+
+            }else {
+                // 如果任务队列为空，那么停在原地
+                forwardSpeed = 0;
+                rotateSpeed = 0;
+            }
+
+        // 如果正在执行任务，那么继续执行任务
+        }else {
+            setTargetWorkbench(this->targetWorkbenchId ,this->targetWorkbench_x,this->targetWorkbench_y, this->commands);
+        }
+
+    }
+
