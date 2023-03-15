@@ -96,8 +96,14 @@ void Robot::setTarget(double tmp_x, double tmp_y) {
     }
 
 
-    // 设置目标工作台及要完成的任务
-void Robot::setTargetWorkbench(int workbenchId , double workbench_x ,double workbench_y, std::vector<std::string> commands) {
+/*
+    设置目标工作台及要完成的任务
+    0 代表正在执行一个任务
+    1 代表已经完成一个buy任务
+    2 代表已经完成一个sell任务
+    3 代表已经完成一个des任务
+*/ 
+int Robot::setTargetWorkbench(int workbenchId , double workbench_x ,double workbench_y, std::vector<std::string> commands) {
         this->targetWorkbenchId = workbenchId;
         this->commands.assign(commands.begin(), commands.end());
         this->targetWorkbench_x = workbench_x;
@@ -107,20 +113,28 @@ void Robot::setTargetWorkbench(int workbenchId , double workbench_x ,double work
         如果到达目标工作台，那么执行指令并将目标工作台id设置为-1表示已经完成当前任务
         */
        if(currentWorkbenchId == workbenchId) {
-            // 执行指令
+            // 执行指令,其实现在commands中只有一个指令
             for(int i = 0 ; i < commands.size() ; i++) {
+                
+                // 将目标工作台id设置为-1表示已经完成当前任务
+                targetWorkbenchId = -1;
 
                 // 执行指令就是将commands中的指令加入到actions中
                 // 然后output函数中会输出actions中的指令
                 actions.push_back(commands[i]);
 
+                if(commands[i] == "buy")
+                    return 1;
+                else if(commands[i] == "sell")
+                    return 2;
+                else if(commands[i] == "destroy")
+                    return 3;
+
             }
-            // 将目标工作台id设置为-1表示已经完成当前任务
-            targetWorkbenchId = -1;
         }
         
         setTarget(workbench_x ,  workbench_y);
-
+        return 0;
         
     };
 
@@ -129,30 +143,42 @@ void Robot::setTargetWorkbench(int workbenchId , double workbench_x ,double work
     // 如果正在执行任务，那么继续执行任务
     // 如果没有正在执行任务，那么执行下一个任务,从任务队列当中取出一个任务
     // 如果任务队列为空，那么停在原地
-void Robot::doWork() {
-
+    /*
+        设置目标工作台及要完成的任务
+        0 代表正在执行一个任务
+        1 代表已经完成一个buy任务
+        2 代表已经完成一个sell任务
+        3 代表已经完成一个des任务
+        4 代表当前空闲了
+    */
+    
+int Robot::doWork() {
         // 如果没有执行命令
         if(targetWorkbenchId == -1) {
             // 如果任务队列不为空
             if(!tasks.empty()) {
-                
-                //cout << "do work...." << endl;
+            
                 // 取出任务队列的第一个任务
                 // 将该任务的目标工作台设置为当前目标工作台
                 Task tmp_task = tasks.front();
                 tasks.pop();
-                setTargetWorkbench(tmp_task.workbenchId , tmp_task.workbench_x ,tmp_task.workbench_y , tmp_task.commands);
+                // 开始一个新任务
+                isWorking = true;
+                return setTargetWorkbench(tmp_task.workbenchId , tmp_task.workbench_x ,tmp_task.workbench_y , tmp_task.commands);
 
             }else {
                 // 如果任务队列为空，那么停在原地
                 forwardSpeed = 0;
                 rotateSpeed = 0;
+                // 将该机器人的状态设置空闲状态
+                isWorking = false;
+                return 4;
             }
 
         // 如果正在执行任务，那么继续执行任务
         }else {
-            setTargetWorkbench(this->targetWorkbenchId ,this->targetWorkbench_x,this->targetWorkbench_y, this->commands);
+            return setTargetWorkbench(this->targetWorkbenchId ,this->targetWorkbench_x,this->targetWorkbench_y, this->commands);
         }
 
-    }
+}
 

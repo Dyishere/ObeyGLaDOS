@@ -9,6 +9,9 @@ class Robot {
 
 
     public:
+
+
+    // 机器人的任务队列
     std::queue<Task> tasks;
     Robot() {}
 
@@ -46,11 +49,37 @@ class Robot {
     // 要执行的指令
     std::vector<std::string> commands;
     std::vector<std::string> actions;
+    bool isWorking = false;
 
-    void output(); 
+
+    /*
+        此方法输出机器人的两个速度
+        而且输出机器人要完成的指令
+    */
+    void output();
+    /*
+        设置一个目标点，机器人将自动设置响应的速度
+    */ 
     void setTarget(double tmp_x, double tmp_y); 
-    void setTargetWorkbench(int workbenchId , double workbench_x ,double workbench_y, std::vector<std::string> commands); 
-    void doWork(); 
+    /*
+        设置一个目标工作台和需要在该工作台完成的指令
+        返回值:
+            0 代表正在执行一个任务
+            1 代表已经完成一个buy任务
+            2 代表已经完成一个sell任务
+            3 代表已经完成一个des任务
+    */
+    int setTargetWorkbench(int workbenchId , double workbench_x ,double workbench_y, std::vector<std::string> commands); 
+    /*
+        此方法会自动从任务队列中取出要执行的任务并完成。
+        返回值:
+            0 代表正在执行一个任务
+            1 代表已经完成一个buy任务
+            2 代表已经完成一个sell任务
+            3 代表已经完成一个des任务
+            4 代表当前空闲了,没有要执行的任务
+    */
+    int doWork(); 
 };
 
 #endif
