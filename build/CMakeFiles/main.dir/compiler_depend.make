@@ -390,7 +390,15 @@ CMakeFiles/main.dir/main.cpp.obj: C:/Users/Administrator/Desktop/WindowsRelease/
   D:/programs/mingw/include/string.h \
   D:/programs/mingw/include/strings.h \
   D:/programs/mingw/include/wchar.h \
-  C:/Users/Administrator/Desktop/WindowsRelease/Workbench.h
+  C:/Users/Administrator/Desktop/WindowsRelease/Workbench.h \
+  C:/Users/Administrator/Desktop/WindowsRelease/ObeyGLaDOS.h \
+  D:/programs/mingw/lib/gcc/mingw32/6.3.0/include/c++/tuple \
+  D:/programs/mingw/lib/gcc/mingw32/6.3.0/include/c++/utility \
+  D:/programs/mingw/lib/gcc/mingw32/6.3.0/include/c++/bits/stl_relops.h \
+  D:/programs/mingw/lib/gcc/mingw32/6.3.0/include/c++/array \
+  D:/programs/mingw/lib/gcc/mingw32/6.3.0/include/c++/stack \
+  D:/programs/mingw/lib/gcc/mingw32/6.3.0/include/c++/bits/stl_stack.h \
+  C:/Users/Administrator/Desktop/WindowsRelease/ObeyGLaDOS.cpp
 
 
 C:/Users/Administrator/Desktop/WindowsRelease/Robot.cpp:
@@ -648,3 +656,19 @@ C:/Users/Administrator/Desktop/WindowsRelease/Workbench.cpp:
 C:/Users/Administrator/Desktop/WindowsRelease/Workbench.h:
 
 C:/Users/Administrator/Desktop/WindowsRelease/main.cpp:
+
+C:/Users/Administrator/Desktop/WindowsRelease/ObeyGLaDOS.h:
+
+D:/programs/mingw/lib/gcc/mingw32/6.3.0/include/c++/tuple:
+
+D:/programs/mingw/lib/gcc/mingw32/6.3.0/include/c++/utility:
+
+D:/programs/mingw/lib/gcc/mingw32/6.3.0/include/c++/bits/stl_relops.h:
+
+D:/programs/mingw/lib/gcc/mingw32/6.3.0/include/c++/array:
+
+D:/programs/mingw/lib/gcc/mingw32/6.3.0/include/c++/stack:
+
+D:/programs/mingw/lib/gcc/mingw32/6.3.0/include/c++/bits/stl_stack.h:
+
+C:/Users/Administrator/Desktop/WindowsRelease/ObeyGLaDOS.cpp:

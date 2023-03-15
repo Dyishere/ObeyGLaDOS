@@ -123,6 +123,8 @@ int Robot::setTargetWorkbench(int workbenchId , double workbench_x ,double workb
                 // 然后output函数中会输出actions中的指令
                 actions.push_back(commands[i]);
 
+                lastworkbenchId = currentWorkbenchId;
+
                 if(commands[i] == "buy")
                     return 1;
                 else if(commands[i] == "sell")

@@ -42,6 +42,8 @@ class Robot {
     // 距离阈值
     double dist_threshold = 1;
 
+    int lastworkbenchId = -1;
+
     // 当前正在前往工作台id
     // -1表示没有前往任何工作台
     int targetWorkbenchId;

@@ -120,4 +120,12 @@ CMakeFiles/main.dir/main.cpp.obj: \
  d:\programs\mingw\lib\gcc\mingw32\6.3.0\include\c++\cstring \
  d:\programs\mingw\include\string.h d:\programs\mingw\include\strings.h \
  d:\programs\mingw\include\wchar.h \
- C:\Users\Administrator\Desktop\WindowsRelease\Workbench.h
+ C:\Users\Administrator\Desktop\WindowsRelease\Workbench.h \
+ C:\Users\Administrator\Desktop\WindowsRelease\ObeyGLaDOS.h \
+ d:\programs\mingw\lib\gcc\mingw32\6.3.0\include\c++\tuple \
+ d:\programs\mingw\lib\gcc\mingw32\6.3.0\include\c++\utility \
+ d:\programs\mingw\lib\gcc\mingw32\6.3.0\include\c++\bits\stl_relops.h \
+ d:\programs\mingw\lib\gcc\mingw32\6.3.0\include\c++\array \
+ d:\programs\mingw\lib\gcc\mingw32\6.3.0\include\c++\stack \
+ d:\programs\mingw\lib\gcc\mingw32\6.3.0\include\c++\bits\stl_stack.h \
+ C:\Users\Administrator\Desktop\WindowsRelease\ObeyGLaDOS.cpp

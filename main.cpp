@@ -6,12 +6,17 @@
 #include "Robot.h"
 #include "Workbench.h"
 #include "Task.h"
+#include "ObeyGLaDOS.h"
+#include "ObeyGLaDOS.cpp"
 
 using namespace std;
 
 
 vector<Workbench> workbenchs;
 vector<Robot> robots;
+target_queue tq;
+
+
 int frameID , money = 0 , workBenchNum = 0;
 char map[100][100];
 
@@ -143,7 +148,26 @@ void readOK() {
 }
 
 int main() {
+    int avl[MAX_ID];
+    double robots_state[NUM_ATELAS*3];
+    double generator_coor[MAX_ID*2];
+    int edges[MAX_ID*MAX_ID] = {
+        0, 0, 0, 1, 1, 0, 0, 0, 1,  // 1
+        0, 0, 0, 1, 0, 1, 0, 0, 1,  // 2
+        0, 0, 0, 0, 1, 1, 0, 0, 1,  // 3
+        1, 1, 0, 0, 0, 0, 1, 0, 1,  // 4
+        1, 0, 1, 0, 0, 0, 1, 0, 1,  // 5
+        0, 1, 1, 0, 0, 0, 1, 0, 1,  // 6
+        0, 0, 0, 1, 1, 1, 0, 1, 1,  // 7
+        0, 0, 0, 0, 0, 0, 1, 0, 0,  // 8
+        1, 1, 1, 1, 1, 1, 1, 0, 0   // 9
+    };
+    int v[MAX_ID] = {
+        6000-3000, 7600-4400, 9200-5800, 22500-15400, 25000-17200, 27500-19200, 105000-76000, 0, 0
+    };
 
+    int Atelas_state[NUM_ATELAS*2] = {4, -1, 4, -1, 4, -1, 4, -1};  // 任务执行状态，上一次关联物品
+    GLaDOS* G = NULL;
     // 初始化机器人
     initRobots();
 
@@ -165,12 +189,27 @@ int main() {
         // 读取OK 
         readOK();
 
+        
+        if(frameID == 1) {
+            for(int i=0;i<NUM_ATELAS;i++){
+                robots_state[i*3] = robots[i].x;
+                robots_state[i*3 + 1] = robots[i].y;
+                robots_state[i*3 + 2] = robots[i].isWorking ? 0.0 : 1.0;
+            }
+            for(int i=0; i<MAX_ID; i++){
+                generator_coor[i*2] = workbenchs[i].x;
+                generator_coor[i*2+1] = workbenchs[i].y;
+            }
+            G = new GLaDOS(&tq, robots_state, edges, generator_coor, v);
+        }
+
 
         //---------------------------------  以上是读取数据，以下是输出信息  ---------------------------------//
         printf("%d\n", frameID);
         // 机器人执行任务
         for(int i = 0; i < 4; i++) {
-           robots[i].doWork();
+           Atelas_state[i*2] = robots[i].doWork();
+           Atelas_state[i*2+1] = robots[i].lastworkbenchId;
         }
         // 输出机器人的动作
         for(int i = 0; i < 4; i++) {
@@ -180,6 +219,68 @@ int main() {
         printf("OK\n", frameID);
         fflush(stdout);
 
+        // GLaDOS! Help me!
+        for (int i = 0; i < NUM_ATELAS; i++)
+        {
+            /*
+            此方法会自动从任务队列中取出要执行的任务并完成。
+            返回值:
+            0 代表正在执行一个任务
+            1 代表已经完成一个buy任务
+            2 代表已经完成一个sell任务
+            3 代表已经完成一个des任务
+            4 代表当前空闲了,没有要执行的任务
+            */
+            // 遍历每一个机器人的状态，更新GLaDOS的状态
+            switch (Atelas_state[i*2])
+            {
+            case 0:
+                continue;
+            case 1:
+                G->free_node(Atelas_state[i*2+1]);
+            case 2:
+                G->feed_node(Atelas_state[i*2+1], robots[i].lastworkbenchId);
+            default:
+                continue;
+            }
+        }
+        for(int i = 0; i < MAX_ID; i++){
+            if(workbenchs[i].productGridStatus==1)avl[i] = 1;
+            else if(workbenchs[i].materialGridStatus!=0)avl[i] = 0;
+            else avl[i] = 0;
+        }
+
+        for(int i=0;i<NUM_ATELAS;i++){
+            robots_state[i*3] = robots[i].x;
+            robots_state[i*3 + 1] = robots[i].y;
+            robots_state[i*3 + 2] = robots[i].isWorking ? 0 : 1;
+        }
+
+        G->update_state(avl, robots_state);
+
+
+
+        // 遍历tq
+        while(tq.size()) {
+            auto tmpFront = tq.front();
+            tq.pop();
+
+            Task t = Task();
+
+            t.workbenchId = tmpFront.target_id;
+            t.workbench_x = workbenchs[t.workbenchId].x;
+            t.workbench_y = workbenchs[t.workbenchId].y;
+            if(tmpFront.action == 1) {
+                t.commands.push_back("buy");
+               
+            }else{
+                t.commands.push_back("sell");
+            }
+            robots[tmpFront.atelas].tasks.push(t);
+        }
+
+
+        
     }
 
     return 0;
