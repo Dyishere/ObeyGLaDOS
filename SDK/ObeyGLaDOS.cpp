@@ -33,40 +33,43 @@ int GLaDOS::backward(int target_Node_ID) {
 	return target_Node_ID;
 };
 
-void GLaDOS::clean_s() {
-	task pop_task;
-
-	while (!_s.empty()) {
-		if (available[_s.top().target_id] != 0)
-			break;
-		else
-		{
-			pop_task = _s.top();
-
-		}
-	}
-};
+//void GLaDOS::clean_s() {
+//	task pop_task;
+//
+//	while (!_s.empty()) {
+//		if (available[_s.top().target_id] != 0)
+//			break;
+//		else
+//		{
+//			pop_task = _s.top();
+//
+//		}
+//	}
+//};
 
 // 卖出后调用
 void GLaDOS::feed_node(int Node_ID, int food) {
 	dynamic_Edge[Node_ID * MAX_ID + food] = 0;
+	dynamic_Edge[food * MAX_ID + Node_ID] = 0;
 };
 
 // 购买后调用
 void GLaDOS::free_node(int Node_ID) {
 	for (int i = 0; i < MAX_ID; i++) {
 		dynamic_Edge[Node_ID * MAX_ID + i] = static_Edge[Node_ID * MAX_ID + i];
+		dynamic_Edge[i * MAX_ID + Node_ID] = static_Edge[i * MAX_ID + Node_ID];
 	}
 };
 
 // 每帧调用
-void GLaDOS::update_state(int avl[MAX_ID], int atelas_coor[NUM_ATELAS * 2]) {
+void GLaDOS::update_state(int avl[MAX_ID], int atelas_coor[NUM_ATELAS * 3]) {
 	for (int i = 0; i < MAX_ID; i++) {
 		available[i] = avl[i];
 	}
 	for (int i = 0; i < NUM_ATELAS; i++) {
-		atelas[i].c.x = atelas_coor[i * 2];
-		atelas[i].c.y = atelas_coor[i * 2 + 1];
+		atelas[i].c.x = atelas_coor[i * 3];
+		atelas[i].c.y = atelas_coor[i * 3 + 1];
+		atelas[i].active = atelas_coor[i * 3 + 2];
 		freeze += atelas[i].active;
 	}
 	generator();
@@ -110,7 +113,7 @@ void GLaDOS::generator() {
 	// 没有则跳过
 };
 
-GLaDOS::GLaDOS(target_queue* tq, int atelas_coor[NUM_ATELAS * 2], int edge[MAX_ID * MAX_ID], int generator_coor[MAX_ID * 2], int value[MAX_ID]) {
+GLaDOS::GLaDOS(target_queue* tq, int atelas_coor[NUM_ATELAS * 3], int edge[MAX_ID * MAX_ID], int generator_coor[MAX_ID * 2], int value[MAX_ID]) {
 	q = tq;
 	for (int i = 0; i < NUM_ATELAS; i++) {
 		atelas[i].c.x = atelas_coor[i * 3];

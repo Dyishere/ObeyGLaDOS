@@ -62,10 +62,10 @@ public:
 	int backward(int target_Node_ID);		// 获取目标节点的前置条件
 
 	// 状态更新
-	void clean_s();						// 清理暂存队列
+	//void clean_s();						// 清理暂存队列
 	void feed_node(int Node_ID, int food);
 	void free_node(int Node_ID);
-	void update_state(int available[MAX_ID], int atelas_coor[NUM_ATELAS * 2]);	// 更新生产机器状态和运载机器人坐标
+	void update_state(int avl[MAX_ID], int atelas_coor[NUM_ATELAS * 3]);	// 更新生产机器状态和运载机器人坐标
 	void generator();
 	GLaDOS(target_queue* tq, int atelas_coor[NUM_ATELAS * 3], int edge[MAX_ID * MAX_ID], int generator_coor[MAX_ID*2], int value[MAX_ID]);
 };
