@@ -12,14 +12,10 @@ using namespace std;
 
 vector<Workbench> workbenchs;
 vector<Robot> robots;
-
-
-
-
-using namespace std;
+int frameID , money = 0 , workBenchNum = 0;
+char map[100][100];
 
 bool readUntilOK() {
-
     char line[1024];
     while (fgets(line, sizeof line, stdin)) {
         if (line[0] == 'O' && line[1] == 'K') {
@@ -30,16 +26,42 @@ bool readUntilOK() {
     return false;
 }
 
+void readMap() {
+    for(int i = 0; i < 100; i++) {
+        for(int j = 0; j < 100; j++) {
+            scanf("%c" , &map[i][j]);
+        }
+        // 读取换行符
+        char tmp;
+        scanf("%c" , &tmp);
+    }
 
-FILE *fp;
+    // read OK
+    char line[1024];
+    //fgets(line, sizeof line, stdin);
+    fgets(line, sizeof line, stdin);
 
-void init(){
+}
+
+void initWorkbenchs() {
+
+    for(int i = 0; i < workBenchNum; i++) {
+        Workbench workbench = Workbench();
+        workbench.workbenchId = i;
+        workbenchs.push_back(workbench);
+    }
+
+
+}
+
+void initRobots(){
 
     // 初始化四个机器人
     for(int i = 0; i < 4; i++) {
         Robot robot =  Robot();
         robot.robotId = i;
         robot.targetWorkbenchId = -1;
+        robot.isWorking = false;
         robots.push_back(robot); 
     }
 
@@ -59,54 +81,31 @@ void init(){
     robots[0].tasks.push(task3);
 
     Task task2 = Task();
-    task2.workbenchId = 7;
+    task2.workbenchId = 1;
     task2.commands.push_back("buy");
-    task2.workbench_x = 48.75;
+    task2.workbench_x = 3.25;
     task2.workbench_y = 48.75;
     robots[1].tasks.push(task2);
 
     Task task4 = Task();
-    task4.workbenchId = 5;
-    task4.workbench_x = 44.75;
-    task4.workbench_y = 48.75;
+    task4.workbenchId = 20;
+    task4.workbench_x = 36.75;
+    task4.workbench_y = 16.25;
     task4.commands.push_back("sell");
     robots[1].tasks.push(task4);
 
 }
 
-int main() {
+void readWorkbenchsInfo() {
 
-    init();
-
-
-    readUntilOK();
-    puts("OK");
-    fflush(stdout);
-
-    int frameID;
-    int money;
-    int workBenchNum = 0;
-    while (scanf("%d", &frameID) != EOF) {
-
-        scanf("%d", &money);
-        scanf("%d", &workBenchNum);
-        // 如果工作台vector为空，那么说明是第一帧输入，需要初始化
-        if(workbenchs.empty()) {
-
-            for(int i = 0; i < workBenchNum; i++) {
-                Workbench workbench = Workbench();
-                workbench.workbenchId = i;
-                workbenchs.push_back(workbench);
-            }
-        }
-        
-        char line[1024];
+    if(frameID == 1) {
+        initWorkbenchs();
+    }
+    // 读取工作台信息
         int tmp_workbenchType , tmp_remainProductTime , tmp_materialGridStatus , tmp_productGridStatus;
         double tmp_workBenchX , tmp_workBenchY;
-
         for(int i = 0; i < workBenchNum; i ++) {   
             scanf("%d %lf %lf %d %d %d" , &tmp_workbenchType , &tmp_workBenchX , &tmp_workBenchY , &tmp_remainProductTime , &tmp_materialGridStatus , &tmp_productGridStatus);
-
             workbenchs[i].workbenchType = tmp_workbenchType;
             workbenchs[i].x = tmp_workBenchX;
             workbenchs[i].y = tmp_workBenchY;
@@ -114,73 +113,73 @@ int main() {
             workbenchs[i].materialGridStatus = tmp_materialGridStatus;
             workbenchs[i].productGridStatus = tmp_productGridStatus;
             workbenchs[i].workbenchId = i;
-
-            // 输出读入的7个数据
-            //cout << tmp_workbenchType << " " << tmp_workBenchX << " " << tmp_workBenchY << " " << tmp_remainProductTime << " " << tmp_materialGridStatus << " " << tmp_productGridStatus << endl;
         }
+}
 
-        //cout << "workbench over ......" << endl;
-
-
-            int workbenchId;
-            int itemType;
-            double timeValue;
-            double collisionValue;
-            double angleSpeed;
-            double lineSpeed_x , lineSpeed_y;
-            double towards;
-            double x , y;
+void readRobotsInfo() {
+    int workbenchId,itemType;
+    double timeValue,collisionValue,angleSpeed,lineSpeed_x , lineSpeed_y,towards,x , y;
         // 再读取4个机器人信息
         for(int i = 0;i < 4;i ++) {
-            // 读取第一个机器人信息
-            /*
-            第一个数为所处工作台id
-            携带物品类型
-            时间价值系数
-            碰撞价值系数
-            角速度
-            线速度
-            朝向
-            坐标
-            */
             scanf("%d %d %lf %lf %lf %lf %lf %lf %lf %lf", &workbenchId, &itemType, &timeValue, &collisionValue, &angleSpeed, &lineSpeed_x, &lineSpeed_y, &towards, &x , &y);
-                robots[i].currentWorkbenchId = workbenchId;
-                robots[i].itemType = itemType;
-                robots[i].timeValue = timeValue;
-                robots[i].collisionValue = collisionValue;
-                robots[i].angleSpeed = angleSpeed;
-                robots[i].v_x = lineSpeed_x;
-                robots[i].v_y = lineSpeed_y;
-                robots[i].towards = towards;
-                robots[i].x = x;
-                robots[i].y = y;  
-
-                //cout << "i = " << i << " over ..." << endl;    
-                // 将输入的十个数字都输出
-                //cout << workbenchId << " " << itemType << " " << timeValue << " " << collisionValue << " " << angleSpeed << " " << lineSpeed_x << " " << lineSpeed_y << " " << towards << " " << x << " " << y << endl; 
+            robots[i].currentWorkbenchId = workbenchId;
+            robots[i].itemType = itemType;
+            robots[i].timeValue = timeValue;
+            robots[i].collisionValue = collisionValue;
+            robots[i].angleSpeed = angleSpeed;
+            robots[i].v_x = lineSpeed_x;
+            robots[i].v_y = lineSpeed_y;
+            robots[i].towards = towards;
+            robots[i].x = x;
+            robots[i].y = y;  
         }
 
-       
+}
+
+void readOK() {
+    char line[1024];
+    fgets(line, sizeof line, stdin);
+    fgets(line, sizeof line, stdin);
+}
+
+int main() {
+
+    // 初始化机器人
+    initRobots();
+
+    readMap();
+    puts("OK");
+    fflush(stdout);
+    
+
+    while (scanf("%d", &frameID) != EOF) {
+
+        // 读取当前的金钱数
+        scanf("%d", &money);
+        // 读取当前的工作台数
+        scanf("%d", &workBenchNum);   
+        // 读取工作台信息
+        readWorkbenchsInfo();
+        // 读取机器人信息
+        readRobotsInfo();
         // 读取OK 
-        fgets(line, sizeof line, stdin);
-        fgets(line, sizeof line, stdin);
+        readOK();
 
+
+        //---------------------------------  以上是读取数据，以下是输出信息  ---------------------------------//
         printf("%d\n", frameID);
-
-
         // 机器人执行任务
         for(int i = 0; i < 4; i++) {
-            robots[i].doWork();
+           robots[i].doWork();
         }
         // 输出机器人的动作
         for(int i = 0; i < 4; i++) {
             robots[i].output();
         }
-
-
         // 输出OK
         printf("OK\n", frameID);
         fflush(stdout);
+
     }
 
     return 0;
