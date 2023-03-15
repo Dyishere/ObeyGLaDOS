@@ -106,6 +106,7 @@ void GLaDOS::generator() {
 					}
 				}
 				if (min_id != -1) {
+					freeze = freeze - 1.0;
 					this->distribute(t = { i, min_id, 1 });
 				}
 				// 计算卖到哪里价值更高
