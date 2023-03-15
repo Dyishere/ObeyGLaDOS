@@ -253,7 +253,7 @@ int main() {
         for(int i=0;i<NUM_ATELAS;i++){
             robots_state[i*3] = robots[i].x;
             robots_state[i*3 + 1] = robots[i].y;
-            robots_state[i*3 + 2] = robots[i].isWorking ? 0 : 1;
+            robots_state[i*3 + 2] = robots[i].isWorking ? 0.0 : 1.0;
         }
 
         G->update_state(avl, robots_state);
