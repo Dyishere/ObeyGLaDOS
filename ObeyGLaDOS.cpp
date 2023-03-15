@@ -69,11 +69,11 @@ void GLaDOS::free_node(int Node_ID) {
 
 // 每帧调用
 void GLaDOS::update_state(int avl[MAX_ID], double atelas_coor[NUM_ATELAS * 3]) {
+	freeze = 0.0;
 	for (int i = 0; i < MAX_ID; i++) {
 		available[i] = avl[i];
 	}
 	for (int i = 0; i < NUM_ATELAS; i++) {
-		freeze = 0.0;
 		atelas[i].c.x = atelas_coor[i * 3];
 		atelas[i].c.y = atelas_coor[i * 3 + 1];
 		atelas[i].active = atelas_coor[i * 3 + 2];
@@ -98,6 +98,7 @@ void GLaDOS::generator() {
 
 			if (available[i] == 0) {
 				for (int j = 0; j < NUM_ATELAS; j++) {	// 载货机器人编号：j
+					if (atelas[j].active == 0.0)continue;
 					tmp_value = atelas[j].c.getDistance(N[i].c);
 					if (tmp_value < min_value) {
 						min_value = tmp_value;

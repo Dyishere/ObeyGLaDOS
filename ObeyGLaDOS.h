@@ -12,7 +12,7 @@
 #define task _task								// 修改为实际使用的任务结构体
 #define MAX_ID 9								// 最大生产机器编号: 0 ~ MAX_ID-1
 #define NUM_ATELAS 4							// 运输机器人数量
-#define target_queue std::queue<_task>				// 任务队列，修改为实际使用的队列
+#define target_queue std::queue<_task>			// 任务队列，修改为实际使用的队列
 
 struct _task {
 	int target_id;	// 指定机器号
@@ -42,7 +42,7 @@ class Atelas {
 public:
 	coor c;
 	//coor target_c;			// 坐标
-	double active;		// 激活状态: 0不可用，1可用
+	double active;		// 激活状态: 0.0不可用，1.0可用
 	Atelas() :c(0.0, 0.0), active(0.0) {};
 };
 
