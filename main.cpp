@@ -148,9 +148,9 @@ void readOK() {
 }
 
 int main() {
-    int avl[MAX_ID];
+    int avl[MAX_Generator] = {0};
     double robots_state[NUM_ATELAS*3];
-    double generator_coor[MAX_ID*2];
+    double generator_coor[MAX_Generator*2];
     int edges[MAX_ID*MAX_ID] = {
         0, 0, 0, 1, 1, 0, 0, 0, 1,  // 1
         0, 0, 0, 1, 0, 1, 0, 0, 1,  // 2
@@ -162,12 +162,14 @@ int main() {
         0, 0, 0, 0, 0, 0, 1, 0, 0,  // 8
         1, 1, 1, 1, 1, 1, 1, 0, 0   // 9
     };
+    int edges_for_generator[MAX_Generator*MAX_Generator] = {0};
     int v[MAX_ID] = {
-        6000-3000, 7600-4400, 9200-5800, 22500-15400, 25000-17200, 27500-19200, 105000-76000, 0, 0
+        6000-3000, 7600-4400, 9200-5800, 22500-15400, 25000-17200, 27500-19200, 105000-76000, 1, 0
     };
-
+    int v_for_generator[MAX_Generator] = {0};
     int Atelas_state[NUM_ATELAS*2] = {4, -1, 4, -1, 4, -1, 4, -1};  // 任务执行状态，上一次关联物品
     GLaDOS* G = NULL;
+
     // 初始化机器人
     initRobots();
 
@@ -188,7 +190,6 @@ int main() {
         readRobotsInfo();
         // 读取OK 
         readOK();
-
         
         if(frameID == 1) {
             for(int i=0;i<NUM_ATELAS;i++){
@@ -196,11 +197,18 @@ int main() {
                 robots_state[i*3 + 1] = robots[i].y;
                 robots_state[i*3 + 2] = robots[i].isWorking ? 0.0 : 1.0;
             }
-            for(int i=0; i<MAX_ID; i++){
+            for(int i=0; i<MAX_Generator; i++){
                 generator_coor[i*2] = workbenchs[i].x;
                 generator_coor[i*2+1] = workbenchs[i].y;
+                v_for_generator[i] = v[workbenchs[i].workbenchType];
+                for(int j=0; j<MAX_Generator; j++){
+                    if(edges[workbenchs[i].workbenchType, workbenchs[j].workbenchType]){
+                        edges_for_generator[i*MAX_Generator+j] = 1;
+                        edges_for_generator[j*MAX_Generator+i] = 1;
+                    }
+                }
             }
-            G = new GLaDOS(&tq, robots_state, edges, generator_coor, v);
+            G = new GLaDOS(&tq, robots_state, edges_for_generator, generator_coor, v_for_generator);
         }
 
 
@@ -239,12 +247,13 @@ int main() {
             case 1:
                 G->free_node(Atelas_state[i*2+1]);
             case 2:
-                G->feed_node(Atelas_state[i*2+1], robots[i].lastworkbenchId);
+                //G->feed_node(Atelas_state[i*2+1], robots[i].lastworkbenchId);
+                continue;
             default:
                 continue;
             }
         }
-        for(int i = 0; i < MAX_ID; i++){
+        for(int i = 0; i < MAX_Generator; i++){
             if(workbenchs[i].productGridStatus==1)avl[i] = 1;
             else if(workbenchs[i].materialGridStatus!=0)avl[i] = 0;
             else avl[i] = 0;
