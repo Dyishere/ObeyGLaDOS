@@ -26,6 +26,40 @@ void Node::init(double x, double y, int Value){
 	this->Value = Value;
 }
 
+int GLaDOS::get_valueable_generator(coor atelas_coor){
+	float max = -100000.0;
+	int max_id = -1;
+	for (int i = 0; i < MAX_Generator; i++) {
+		if(available[i] == 1)
+			if (N[i].Value / N[i].c.getDistance(atelas_coor) > max) {
+				max = N[i].Value / N[i].c.getDistance(atelas_coor);
+				max_id = i;
+			}
+	}
+
+	return max_id;
+}
+
+int GLaDOS::get_nearest_node(int generator_id){
+	float max = -100000.0;
+	int max_id = -1;
+
+	// for(int i = 0; i<MAX_Generator; i++){
+	// 	cout << dynamic_Edge[generator_id * MAX_Generator + i];
+	// }
+	// cout << endl;
+
+	for (int i = 0; i < MAX_Generator; i++) {
+		if (dynamic_Edge[generator_id * MAX_Generator + i] == 1) {
+			if (N[i].c.getDistance(N[generator_id].c) > max) {
+				max = N[i].Value / N[i].c.getDistance(N[generator_id].c);
+				max_id = i;
+			}
+		}
+	}
+	return max_id;
+};
+
 void GLaDOS::distribute(task t) {
 	this->q->push(t);
 };
@@ -55,6 +89,7 @@ int GLaDOS::backward(int target_Node_ID) {
 
 // 卖出后调用
 void GLaDOS::feed_node(int Node_ID, int food) {
+	if(Node_ID == MAX_ID-1 || Node_ID == MAX_ID-2)return;
 	dynamic_Edge[Node_ID * MAX_Generator + food] = 0;
 	dynamic_Edge[food * MAX_Generator + Node_ID] = 0;
 };
@@ -95,40 +130,46 @@ void GLaDOS::generator() {
 	task t;
 
 	// 先检查有没有制造好的物品，有则分配购买命令，并接上一条卖出命令
-	for (int i = MAX_Generator-1; i >= 0; i--) {	// 生产机器编号：i
-		// 初始化临时变量
-		min_value = 9999.0, max_weight=-9999.0;
-		min_id=-1, max_target=-1;
-
+	for (int i = 0; i < NUM_Atelas; i++) {	// 运载机器编号：i
 		if (freeze <= 0.0)break;
-		if (available[i] == 1) {
-			for (int j = 0; j < NUM_ATELAS; j++) {	// 载货机器人编号：j
-				if (atelas[j].active == 0.0)continue;
-				tmp_value = atelas[j].c.getDistance(N[i].c);
-				if (tmp_value < min_value) {
-					min_value = tmp_value;
-					min_id = j;
-				}
-			}
+		else{
+			// for (int j = 0; j < NUM_ATELAS; j++) {	// 载货机器人编号：j
+			// 	if (atelas[j].active == 0.0)continue;
+			// 	tmp_value = atelas[j].c.getDistance(N[i].c);
+			// 	if (tmp_value < min_value) {
+			// 		min_value = tmp_value;
+			// 		min_id = j;
+			// 	}
+			// }
+			int max_id = this->get_valueable_generator(atelas[i].c);
 
-			if (min_id != -1) {
+			if (max_id != -1) {
 				freeze = freeze - 1.0;
-				this->distribute(t = { i, min_id, 1 });
-				this->atelas[min_id].active = 0.0;
-				this->atelas[min_id].target = i;				// 将Atelas的目标设置为生产机器
-				this->available[i] = -1;						// 将生产机器的状态设置为不可用
+				this->distribute(t = { max_id, i, 1 });
+				this->atelas[i].active = 0.0;
+				this->atelas[i].target = max_id;				// 将Atelas的目标设置为生产机器
+				this->available[max_id] = -1;						// 将生产机器的状态设置为不可用
 
 				// 计算卖到哪里价值更高
-				for (int x = i + 1; x < MAX_Generator; x++) {
-					if (dynamic_Edge[i * MAX_Generator + i + x] == 0)continue;
-					if (N[x].Value / N[x].c.getDistance(N[i].c) > max_weight) {
-						max_weight = N[x].Value / N[x].c.getDistance(N[i].c);
-						max_target = x;
-					}
-					if (max_target != -1)
-						this->distribute(t = { x, min_id, -1 });
-						this->feed_node(i, x);
+				// max_target=-1, max_weight=-9999.0;
+
+				// for (int x = 0; x < MAX_Generator; x++) {
+				// 	if (dynamic_Edge[i * MAX_Generator + x] < 1)continue;
+				// 	if (N[x].Value / N[x].c.getDistance(N[i].c) > max_weight) {
+				// 		max_weight = N[x].Value / N[x].c.getDistance(N[i].c);
+				// 		max_target = x;
+				// 	}
+				// }
+				// if (max_target != -1){
+				// 	this->distribute(t = { max_target, min_id, -1 });
+				// 	this->feed_node(i, max_target);
+				// }
+				int max_target = this->get_nearest_node(max_id);
+				if(max_target != -1){
+					this->distribute(t = { max_target, i, -1 });
+					this->feed_node(max_target, max_id);
 				}
+				
 			}
 		}
 	}

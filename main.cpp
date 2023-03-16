@@ -112,6 +112,7 @@ void readWorkbenchsInfo() {
         for(int i = 0; i < workBenchNum; i ++) {   
             scanf("%d %lf %lf %d %d %d" , &tmp_workbenchType , &tmp_workBenchX , &tmp_workBenchY , &tmp_remainProductTime , &tmp_materialGridStatus , &tmp_productGridStatus);
             workbenchs[i].workbenchType = tmp_workbenchType;
+            //cout << "workbenchType: " << workbenchs[i].workbenchType << endl;
             workbenchs[i].x = tmp_workBenchX;
             workbenchs[i].y = tmp_workBenchY;
             workbenchs[i].remainProductTime = tmp_remainProductTime;
@@ -155,12 +156,12 @@ int main() {
         0, 0, 0, 1, 1, 0, 0, 0, 1,  // 1
         0, 0, 0, 1, 0, 1, 0, 0, 1,  // 2
         0, 0, 0, 0, 1, 1, 0, 0, 1,  // 3
-        1, 1, 0, 0, 0, 0, 1, 0, 1,  // 4
-        1, 0, 1, 0, 0, 0, 1, 0, 1,  // 5
-        0, 1, 1, 0, 0, 0, 1, 0, 1,  // 6
-        0, 0, 0, 1, 1, 1, 0, 1, 1,  // 7
-        0, 0, 0, 0, 0, 0, 1, 0, 0,  // 8
-        1, 1, 1, 1, 1, 1, 1, 0, 0   // 9
+        -1, -1, 0, 0, 0, 0, 1, 0, 1,  // 4
+        -1, 0, -1, 0, 0, 0, 1, 0, 1,  // 5
+        0, -1, -1, 0, 0, 0, 1, 0, 1,  // 6
+        0, 0, 0, -1, -1, -1, 0, 1, 1,  // 7
+        0, 0, 0, 0, 0, 0, -1, 0, 0,  // 8
+        -1, -1, -1, -1, -1, -1, -1, 0, 0   // 9
     };
     int edges_for_generator[MAX_Generator*MAX_Generator] = {0};
     int v[MAX_ID] = {
@@ -197,15 +198,14 @@ int main() {
                 robots_state[i*3 + 1] = robots[i].y;
                 robots_state[i*3 + 2] = robots[i].isWorking ? 0.0 : 1.0;
             }
-            for(int i=0; i<MAX_Generator; i++){
+            for(int i=0; i<MAX_Generator; i++){     // 第i个实例工作台
                 generator_coor[i*2] = workbenchs[i].x;
                 generator_coor[i*2+1] = workbenchs[i].y;
-                v_for_generator[i] = v[workbenchs[i].workbenchType];
+                v_for_generator[i] = v[workbenchs[i].workbenchType-1];
                 for(int j=0; j<MAX_Generator; j++){
-                    if(edges[workbenchs[i].workbenchType, workbenchs[j].workbenchType]){
-                        edges_for_generator[i*MAX_Generator+j] = 1;
-                        edges_for_generator[j*MAX_Generator+i] = 1;
-                    }
+                    if(edges[(workbenchs[i].workbenchType-1)*MAX_ID + (workbenchs[j].workbenchType-1)] == 1)
+                        edges_for_generator[i*MAX_Generator+j] = edges[(workbenchs[i].workbenchType-1)*MAX_ID + (workbenchs[j].workbenchType-1)];
+                    // edges_for_generator[j*MAX_Generator+i] = -edges[workbenchs[i].workbenchType, workbenchs[j].workbenchType];
                 }
             }
             G = new GLaDOS(&tq, robots_state, edges_for_generator, generator_coor, v_for_generator);

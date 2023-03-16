@@ -58,13 +58,15 @@ public:
 
 	Node N[MAX_Generator];
 	int static_Edge[MAX_Generator * MAX_Generator];		
-	int dynamic_Edge[MAX_Generator * MAX_Generator];	// 当工作台某个需要的物品已满足，则将对应边置0，未满足则置1
+	int dynamic_Edge[MAX_Generator * MAX_Generator];	// 无关联置0， 可以卖出置1， 可以购买置-1
 	int available[MAX_Generator];						// 表明工作台状态：-1工作占用、0空闲、1生产完毕
 	Atelas atelas[NUM_ATELAS];							// 存储运输机器人状态
 	float freeze;
 	target_queue* q;
 
 	// 决策工具
+	int get_valueable_generator(coor atelas_coor);	// 获取最有价值的生产工作台
+	int get_nearest_node(int generator_id);	// 获取最匹配的售出工作台
 	void distribute(task t);				// 分配任务	
 	int backward(int target_Node_ID);		// 获取目标节点的前置条件
 
