@@ -128,6 +128,30 @@ main/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\main.dir\build.make CMakeFiles/main.dir/build
 .PHONY : main/fast
 
+ObeyGLaDOS.obj: ObeyGLaDOS.cpp.obj
+.PHONY : ObeyGLaDOS.obj
+
+# target to build an object file
+ObeyGLaDOS.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\main.dir\build.make CMakeFiles/main.dir/ObeyGLaDOS.cpp.obj
+.PHONY : ObeyGLaDOS.cpp.obj
+
+ObeyGLaDOS.i: ObeyGLaDOS.cpp.i
+.PHONY : ObeyGLaDOS.i
+
+# target to preprocess a source file
+ObeyGLaDOS.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\main.dir\build.make CMakeFiles/main.dir/ObeyGLaDOS.cpp.i
+.PHONY : ObeyGLaDOS.cpp.i
+
+ObeyGLaDOS.s: ObeyGLaDOS.cpp.s
+.PHONY : ObeyGLaDOS.s
+
+# target to generate assembly for a file
+ObeyGLaDOS.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\main.dir\build.make CMakeFiles/main.dir/ObeyGLaDOS.cpp.s
+.PHONY : ObeyGLaDOS.cpp.s
+
 Robot.obj: Robot.cpp.obj
 .PHONY : Robot.obj
 
@@ -233,6 +257,9 @@ help:
 	@echo ... edit_cache
 	@echo ... rebuild_cache
 	@echo ... main
+	@echo ... ObeyGLaDOS.obj
+	@echo ... ObeyGLaDOS.i
+	@echo ... ObeyGLaDOS.s
 	@echo ... Robot.obj
 	@echo ... Robot.i
 	@echo ... Robot.s

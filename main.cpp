@@ -7,7 +7,7 @@
 #include "Workbench.h"
 #include "Task.h"
 #include "ObeyGLaDOS.h"
-#include "ObeyGLaDOS.cpp"
+// #include "ObeyGLaDOS.cpp"
 
 using namespace std;
 
@@ -18,6 +18,7 @@ target_queue tq;
 
 
 int frameID , money = 0 , workBenchNum = 0;
+
 char map[100][100];
 
 bool readUntilOK() {
@@ -149,7 +150,8 @@ void readOK() {
 }
 
 int main() {
-    int avl[MAX_Generator] = {0};
+    int avl[MAX_Generator] = {-1};
+    int type[MAX_Generator] = {-1};
     double robots_state[NUM_ATELAS*3];
     double generator_coor[MAX_Generator*2];
     int edges[MAX_ID*MAX_ID] = {
@@ -165,7 +167,7 @@ int main() {
     };
     int edges_for_generator[MAX_Generator*MAX_Generator] = {0};
     int v[MAX_ID] = {
-        6000-3000, 7600-4400, 9200-5800, 22500-15400, 25000-17200, 27500-19200, 105000-76000, 1, 0
+        (6000-3000)*1, (7600-4400)*1, (9200-5800)*1, (22500-15400)*10, (25000-17200)*10, (27500-19200)*10, (105000-76000)*100, 1, 1
     };
     int v_for_generator[MAX_Generator] = {0};
     int Atelas_state[NUM_ATELAS*2] = {4, -1, 4, -1, 4, -1, 4, -1};  // 任务执行状态，上一次关联物品
@@ -199,16 +201,16 @@ int main() {
                 robots_state[i*3 + 2] = robots[i].isWorking ? 0.0 : 1.0;
             }
             for(int i=0; i<MAX_Generator; i++){     // 第i个实例工作台
+                type[i] = workbenchs[i].workbenchType;
                 generator_coor[i*2] = workbenchs[i].x;
                 generator_coor[i*2+1] = workbenchs[i].y;
                 v_for_generator[i] = v[workbenchs[i].workbenchType-1];
                 for(int j=0; j<MAX_Generator; j++){
-                    if(edges[(workbenchs[i].workbenchType-1)*MAX_ID + (workbenchs[j].workbenchType-1)] == 1)
-                        edges_for_generator[i*MAX_Generator+j] = edges[(workbenchs[i].workbenchType-1)*MAX_ID + (workbenchs[j].workbenchType-1)];
+                    edges_for_generator[i*MAX_Generator+j] = edges[(workbenchs[i].workbenchType-1)*MAX_ID + (workbenchs[j].workbenchType-1)];
                     // edges_for_generator[j*MAX_Generator+i] = -edges[workbenchs[i].workbenchType, workbenchs[j].workbenchType];
                 }
             }
-            G = new GLaDOS(&tq, robots_state, edges_for_generator, generator_coor, v_for_generator);
+            G = new GLaDOS(&tq, robots_state, edges_for_generator, generator_coor, type, v_for_generator);
         }
 
 
@@ -217,7 +219,7 @@ int main() {
         // 机器人执行任务
         for(int i = 0; i < 4; i++) {
            Atelas_state[i*2] = robots[i].doWork();
-           Atelas_state[i*2+1] = robots[i].lastworkbenchId;
+           Atelas_state[i*2+1] = robots[i].lastworkbenchId-1;
         }
         // 输出机器人的动作
         for(int i = 0; i < 4; i++) {
@@ -239,6 +241,10 @@ int main() {
             3 代表已经完成一个des任务
             4 代表当前空闲了,没有要执行的任务
             */
+            for(int i = 0; i < MAX_Generator; i++){
+                if(workbenchs[i].productGridStatus==1)avl[i] = 1;
+                else avl[i] = 0;
+            }
             // 遍历每一个机器人的状态，更新GLaDOS的状态
             switch (Atelas_state[i*2])
             {
@@ -252,11 +258,6 @@ int main() {
             default:
                 continue;
             }
-        }
-        for(int i = 0; i < MAX_Generator; i++){
-            if(workbenchs[i].productGridStatus==1)avl[i] = 1;
-            else if(workbenchs[i].materialGridStatus!=0)avl[i] = 0;
-            else avl[i] = 0;
         }
 
         for(int i=0;i<NUM_ATELAS;i++){

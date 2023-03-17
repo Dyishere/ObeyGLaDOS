@@ -161,7 +161,9 @@ int Robot::doWork() {
             if(!tasks.empty()) {
             
                 // 取出任务队列的第一个任务
-                // 将该任务的目标工作台设置为当前目标工作台
+                // 将该任务的目标工作台设置为当前目标工作台'
+
+            
                 Task tmp_task = tasks.front();
                 tasks.pop();
                 // 开始一个新任务

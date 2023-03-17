@@ -52,6 +52,9 @@ class Robot {
     std::vector<std::string> commands;
     std::vector<std::string> actions;
     bool isWorking = false;
+    
+    //vector<Workbench> *workbenches;
+
 
 
     /*

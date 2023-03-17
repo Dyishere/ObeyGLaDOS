@@ -68,10 +68,24 @@ include CMakeFiles/main.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/main.dir/flags.make
 
+CMakeFiles/main.dir/ObeyGLaDOS.cpp.obj: CMakeFiles/main.dir/flags.make
+CMakeFiles/main.dir/ObeyGLaDOS.cpp.obj: C:/Users/Administrator/Desktop/WindowsRelease/ObeyGLaDOS.cpp
+CMakeFiles/main.dir/ObeyGLaDOS.cpp.obj: CMakeFiles/main.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Administrator\Desktop\WindowsRelease\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/main.dir/ObeyGLaDOS.cpp.obj"
+	D:\programs\mingw\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/main.dir/ObeyGLaDOS.cpp.obj -MF CMakeFiles\main.dir\ObeyGLaDOS.cpp.obj.d -o CMakeFiles\main.dir\ObeyGLaDOS.cpp.obj -c C:\Users\Administrator\Desktop\WindowsRelease\ObeyGLaDOS.cpp
+
+CMakeFiles/main.dir/ObeyGLaDOS.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/main.dir/ObeyGLaDOS.cpp.i"
+	D:\programs\mingw\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\Administrator\Desktop\WindowsRelease\ObeyGLaDOS.cpp > CMakeFiles\main.dir\ObeyGLaDOS.cpp.i
+
+CMakeFiles/main.dir/ObeyGLaDOS.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/main.dir/ObeyGLaDOS.cpp.s"
+	D:\programs\mingw\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Administrator\Desktop\WindowsRelease\ObeyGLaDOS.cpp -o CMakeFiles\main.dir\ObeyGLaDOS.cpp.s
+
 CMakeFiles/main.dir/Robot.cpp.obj: CMakeFiles/main.dir/flags.make
 CMakeFiles/main.dir/Robot.cpp.obj: C:/Users/Administrator/Desktop/WindowsRelease/Robot.cpp
 CMakeFiles/main.dir/Robot.cpp.obj: CMakeFiles/main.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Administrator\Desktop\WindowsRelease\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/main.dir/Robot.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Administrator\Desktop\WindowsRelease\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/main.dir/Robot.cpp.obj"
 	D:\programs\mingw\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/main.dir/Robot.cpp.obj -MF CMakeFiles\main.dir\Robot.cpp.obj.d -o CMakeFiles\main.dir\Robot.cpp.obj -c C:\Users\Administrator\Desktop\WindowsRelease\Robot.cpp
 
 CMakeFiles/main.dir/Robot.cpp.i: cmake_force
@@ -85,7 +99,7 @@ CMakeFiles/main.dir/Robot.cpp.s: cmake_force
 CMakeFiles/main.dir/Task.cpp.obj: CMakeFiles/main.dir/flags.make
 CMakeFiles/main.dir/Task.cpp.obj: C:/Users/Administrator/Desktop/WindowsRelease/Task.cpp
 CMakeFiles/main.dir/Task.cpp.obj: CMakeFiles/main.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Administrator\Desktop\WindowsRelease\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/main.dir/Task.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Administrator\Desktop\WindowsRelease\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/main.dir/Task.cpp.obj"
 	D:\programs\mingw\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/main.dir/Task.cpp.obj -MF CMakeFiles\main.dir\Task.cpp.obj.d -o CMakeFiles\main.dir\Task.cpp.obj -c C:\Users\Administrator\Desktop\WindowsRelease\Task.cpp
 
 CMakeFiles/main.dir/Task.cpp.i: cmake_force
@@ -99,7 +113,7 @@ CMakeFiles/main.dir/Task.cpp.s: cmake_force
 CMakeFiles/main.dir/Workbench.cpp.obj: CMakeFiles/main.dir/flags.make
 CMakeFiles/main.dir/Workbench.cpp.obj: C:/Users/Administrator/Desktop/WindowsRelease/Workbench.cpp
 CMakeFiles/main.dir/Workbench.cpp.obj: CMakeFiles/main.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Administrator\Desktop\WindowsRelease\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/main.dir/Workbench.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Administrator\Desktop\WindowsRelease\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/main.dir/Workbench.cpp.obj"
 	D:\programs\mingw\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/main.dir/Workbench.cpp.obj -MF CMakeFiles\main.dir\Workbench.cpp.obj.d -o CMakeFiles\main.dir\Workbench.cpp.obj -c C:\Users\Administrator\Desktop\WindowsRelease\Workbench.cpp
 
 CMakeFiles/main.dir/Workbench.cpp.i: cmake_force
@@ -113,7 +127,7 @@ CMakeFiles/main.dir/Workbench.cpp.s: cmake_force
 CMakeFiles/main.dir/main.cpp.obj: CMakeFiles/main.dir/flags.make
 CMakeFiles/main.dir/main.cpp.obj: C:/Users/Administrator/Desktop/WindowsRelease/main.cpp
 CMakeFiles/main.dir/main.cpp.obj: CMakeFiles/main.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Administrator\Desktop\WindowsRelease\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/main.dir/main.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Administrator\Desktop\WindowsRelease\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/main.dir/main.cpp.obj"
 	D:\programs\mingw\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/main.dir/main.cpp.obj -MF CMakeFiles\main.dir\main.cpp.obj.d -o CMakeFiles\main.dir\main.cpp.obj -c C:\Users\Administrator\Desktop\WindowsRelease\main.cpp
 
 CMakeFiles/main.dir/main.cpp.i: cmake_force
@@ -126,6 +140,7 @@ CMakeFiles/main.dir/main.cpp.s: cmake_force
 
 # Object files for target main
 main_OBJECTS = \
+"CMakeFiles/main.dir/ObeyGLaDOS.cpp.obj" \
 "CMakeFiles/main.dir/Robot.cpp.obj" \
 "CMakeFiles/main.dir/Task.cpp.obj" \
 "CMakeFiles/main.dir/Workbench.cpp.obj" \
@@ -134,6 +149,7 @@ main_OBJECTS = \
 # External object files for target main
 main_EXTERNAL_OBJECTS =
 
+main.exe: CMakeFiles/main.dir/ObeyGLaDOS.cpp.obj
 main.exe: CMakeFiles/main.dir/Robot.cpp.obj
 main.exe: CMakeFiles/main.dir/Task.cpp.obj
 main.exe: CMakeFiles/main.dir/Workbench.cpp.obj
@@ -142,7 +158,7 @@ main.exe: CMakeFiles/main.dir/build.make
 main.exe: CMakeFiles/main.dir/linkLibs.rsp
 main.exe: CMakeFiles/main.dir/objects1.rsp
 main.exe: CMakeFiles/main.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=C:\Users\Administrator\Desktop\WindowsRelease\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Linking CXX executable main.exe"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=C:\Users\Administrator\Desktop\WindowsRelease\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Linking CXX executable main.exe"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles\main.dir\link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

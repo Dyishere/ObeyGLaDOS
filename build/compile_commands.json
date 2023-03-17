@@ -1,6 +1,12 @@
 [
 {
   "directory": "C:/Users/Administrator/Desktop/WindowsRelease/build",
+  "command": "D:\\programs\\mingw\\bin\\g++.exe   -g -std=gnu++1z -o CMakeFiles\\main.dir\\ObeyGLaDOS.cpp.obj -c C:\\Users\\Administrator\\Desktop\\WindowsRelease\\ObeyGLaDOS.cpp",
+  "file": "C:/Users/Administrator/Desktop/WindowsRelease/ObeyGLaDOS.cpp",
+  "output": "CMakeFiles/main.dir/ObeyGLaDOS.cpp.obj"
+},
+{
+  "directory": "C:/Users/Administrator/Desktop/WindowsRelease/build",
   "command": "D:\\programs\\mingw\\bin\\g++.exe   -g -std=gnu++1z -o CMakeFiles\\main.dir\\Robot.cpp.obj -c C:\\Users\\Administrator\\Desktop\\WindowsRelease\\Robot.cpp",
   "file": "C:/Users/Administrator/Desktop/WindowsRelease/Robot.cpp",
   "output": "CMakeFiles/main.dir/Robot.cpp.obj"

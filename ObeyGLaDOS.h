@@ -13,11 +13,11 @@
 #define MAX_ID 9								// 最大生产机器编号: 0 ~ MAX_ID-1
 #define MAX_Generator 31							// 生产机器数量
 #define NUM_ATELAS 4							// 运输机器人数量
+#define recycle_bin 8							// 回收站编号
 #define target_queue std::queue<_task>			// 任务队列，修改为实际使用的队列
 
-int NUM_Atelas = 4;
-
-struct _task {
+struct _task
+{
 	int target_id;	// 指定机器号
 	int atelas;		// 指定机器人
 	int action;		// 1购买、-1卖出
@@ -33,12 +33,14 @@ public:
 
 class Node {
 public:
-	int Value;				// 产生物品价值
+	int Value;								// 产生物品价值
+	int Type;								// 工作台类型
+	//bool addition[MAX_Generator] = {false};	// 食谱
 	coor c;
 	// int Jump;					// 与回收站之间的路程
 	// int GetJump(Node n, float sigma);
-	void init(double x, double y, int Value);
-	Node():c(0, 0), Value(0) {};
+	void init(double x, double y, int Value, int Type);
+	Node():c(0, 0), Value(0), Type(0) {};
 };
 
 class Atelas {
@@ -50,7 +52,7 @@ public:
 	Atelas() :c(0.0, 0.0), active(0.0) {};
 };
 
-target_queue t_queue;			// 任务队列
+// target_queue t_queue;			// 任务队列
 
 class GLaDOS {
 public:
@@ -76,7 +78,7 @@ public:
 	void free_node(int Node_ID);
 	void update_state(int avl[MAX_Generator], double atelas_coor[NUM_ATELAS * 3]);	// 更新生产机器状态和运载机器人坐标
 	void generator();
-	GLaDOS(target_queue* tq, double atelas_coor[NUM_ATELAS * 3], int edge[MAX_Generator * MAX_Generator], double generator_coor[MAX_Generator*2], int value[MAX_Generator]);
+	GLaDOS(target_queue* tq, double atelas_coor[NUM_ATELAS * 3], int edge[MAX_Generator * MAX_Generator], double generator_coor[MAX_Generator*2], int Type[MAX_Generator], int value[MAX_Generator]);
 };
 
 #endif // OBEY_GLADOS_SRC

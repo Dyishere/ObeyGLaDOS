@@ -127,5 +127,4 @@ CMakeFiles/main.dir/main.cpp.obj: \
  d:\programs\mingw\lib\gcc\mingw32\6.3.0\include\c++\bits\stl_relops.h \
  d:\programs\mingw\lib\gcc\mingw32\6.3.0\include\c++\array \
  d:\programs\mingw\lib\gcc\mingw32\6.3.0\include\c++\stack \
- d:\programs\mingw\lib\gcc\mingw32\6.3.0\include\c++\bits\stl_stack.h \
- C:\Users\Administrator\Desktop\WindowsRelease\ObeyGLaDOS.cpp
+ d:\programs\mingw\lib\gcc\mingw32\6.3.0\include\c++\bits\stl_stack.h

@@ -1,4 +1,6 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/main.dir/ObeyGLaDOS.cpp.obj"
+  "CMakeFiles/main.dir/ObeyGLaDOS.cpp.obj.d"
   "CMakeFiles/main.dir/Robot.cpp.obj"
   "CMakeFiles/main.dir/Robot.cpp.obj.d"
   "CMakeFiles/main.dir/Task.cpp.obj"

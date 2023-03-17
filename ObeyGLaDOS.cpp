@@ -20,21 +20,32 @@ double coor::getDistance(coor c) {
 //	return Jump;
 //};
 
-void Node::init(double x, double y, int Value){
+void Node::init(double x, double y, int Value, int Type){
 	c.x = x;
 	c.y = y;
 	this->Value = Value;
+	this->Type = Type;
 }
 
 int GLaDOS::get_valueable_generator(coor atelas_coor){
+	int sell_available = 0;
 	float max = -100000.0;
 	int max_id = -1;
 	for (int i = 0; i < MAX_Generator; i++) {
-		if(available[i] == 1)
+		sell_available = 0;
+		for(int j = 0; j < MAX_Generator; j++){
+			if(dynamic_Edge[i*MAX_Generator+j] == 1){
+				sell_available = 1;
+				break;
+			}
+		}
+
+		if(available[i] == 1 && sell_available == 1){
 			if (N[i].Value / N[i].c.getDistance(atelas_coor) > max) {
 				max = N[i].Value / N[i].c.getDistance(atelas_coor);
 				max_id = i;
 			}
+		}
 	}
 
 	return max_id;
@@ -43,7 +54,6 @@ int GLaDOS::get_valueable_generator(coor atelas_coor){
 int GLaDOS::get_nearest_node(int generator_id){
 	float max = -100000.0;
 	int max_id = -1;
-
 	// for(int i = 0; i<MAX_Generator; i++){
 	// 	cout << dynamic_Edge[generator_id * MAX_Generator + i];
 	// }
@@ -51,7 +61,7 @@ int GLaDOS::get_nearest_node(int generator_id){
 
 	for (int i = 0; i < MAX_Generator; i++) {
 		if (dynamic_Edge[generator_id * MAX_Generator + i] == 1) {
-			if (N[i].c.getDistance(N[generator_id].c) > max) {
+			if (N[i].Value / N[i].c.getDistance(N[generator_id].c) > max) {
 				max = N[i].Value / N[i].c.getDistance(N[generator_id].c);
 				max_id = i;
 			}
@@ -89,17 +99,23 @@ int GLaDOS::backward(int target_Node_ID) {
 
 // 卖出后调用
 void GLaDOS::feed_node(int Node_ID, int food) {
-	if(Node_ID == MAX_ID-1 || Node_ID == MAX_ID-2)return;
-	dynamic_Edge[Node_ID * MAX_Generator + food] = 0;
-	dynamic_Edge[food * MAX_Generator + Node_ID] = 0;
+	if(N[Node_ID].Type == recycle_bin)return;
+	for (int i = 0; i < MAX_Generator; i++) {
+		if (N[i].Type == N[food].Type) {
+			dynamic_Edge[Node_ID * MAX_Generator + i] = 0;
+			dynamic_Edge[i * MAX_Generator + Node_ID] = 0;
+		}
+	}
 };
 
 // 购买后调用
 void GLaDOS::free_node(int Node_ID) {
 	available[Node_ID] = 0;
 	for (int i = 0; i < MAX_Generator; i++) {
-		dynamic_Edge[Node_ID * MAX_Generator + i] = static_Edge[Node_ID * MAX_Generator + i];
-		dynamic_Edge[i * MAX_Generator + Node_ID] = static_Edge[i * MAX_Generator + Node_ID];
+		if(static_Edge[Node_ID*MAX_Generator+i] == -1){
+			dynamic_Edge[Node_ID * MAX_Generator + i] = -1;
+			dynamic_Edge[i * MAX_Generator + Node_ID] = 1;
+		}
 	}
 };
 
@@ -114,10 +130,12 @@ void GLaDOS::update_state(int avl[MAX_Generator], double atelas_coor[NUM_ATELAS 
 			atelas[i].target = -1;
 		freeze += atelas[i].active;
 	}
+
+	// 更新节点状态
 	for (int i = 0; i < MAX_Generator; i++) {
 		available[i] = avl[i];
 	}
-	for(int i =0; i<NUM_ATELAS; i++){
+	for(int i = 0; i<NUM_ATELAS; i++){
 		if(atelas[i].target != -1)		// 若有正在运送的货物，则将其目标设置为不可用3
 			available[atelas[i].target] = -1;
 	}
@@ -130,9 +148,9 @@ void GLaDOS::generator() {
 	task t;
 
 	// 先检查有没有制造好的物品，有则分配购买命令，并接上一条卖出命令
-	for (int i = 0; i < NUM_Atelas; i++) {	// 运载机器编号：i
+	for (int i = 0; i < NUM_ATELAS; i++) {	// 运载机器编号：i
 		if (freeze <= 0.0)break;
-		else{
+		else if(atelas[i].active == 1.0){
 			// for (int j = 0; j < NUM_ATELAS; j++) {	// 载货机器人编号：j
 			// 	if (atelas[j].active == 0.0)continue;
 			// 	tmp_value = atelas[j].c.getDistance(N[i].c);
@@ -144,11 +162,6 @@ void GLaDOS::generator() {
 			int max_id = this->get_valueable_generator(atelas[i].c);
 
 			if (max_id != -1) {
-				freeze = freeze - 1.0;
-				this->distribute(t = { max_id, i, 1 });
-				this->atelas[i].active = 0.0;
-				this->atelas[i].target = max_id;				// 将Atelas的目标设置为生产机器
-				this->available[max_id] = -1;						// 将生产机器的状态设置为不可用
 
 				// 计算卖到哪里价值更高
 				// max_target=-1, max_weight=-9999.0;
@@ -166,17 +179,21 @@ void GLaDOS::generator() {
 				// }
 				int max_target = this->get_nearest_node(max_id);
 				if(max_target != -1){
+					freeze = freeze - 1.0;
+					this->distribute(t = { max_id, i, 1 });
+					this->atelas[i].active = 0.0;
+					this->atelas[i].target = max_id;				// 将Atelas的目标设置为生产机器
+					this->available[max_id] = -1;					// 将生产机器的状态设置为不可用
 					this->distribute(t = { max_target, i, -1 });
 					this->feed_node(max_target, max_id);
 				}
-				
 			}
 		}
 	}
 	// 没有则跳过
 };
 
-GLaDOS::GLaDOS(target_queue* tq, double atelas_coor[NUM_ATELAS * 3], int edge[MAX_Generator * MAX_Generator], double generator_coor[MAX_Generator * 2], int value[MAX_Generator]) {
+GLaDOS::GLaDOS(target_queue* tq, double atelas_coor[NUM_ATELAS * 3], int edge[MAX_Generator * MAX_Generator], double generator_coor[MAX_Generator * 2], int Type[MAX_Generator], int value[MAX_Generator]) {
 	this->q = tq;
 	for (int i = 0; i < NUM_ATELAS; i++) {
 		this->atelas[i].c.x = atelas_coor[i * 3];
@@ -188,6 +205,7 @@ GLaDOS::GLaDOS(target_queue* tq, double atelas_coor[NUM_ATELAS * 3], int edge[MA
 		this->dynamic_Edge[i] = edge[i];
 	}
 	for (int i = 0; i < MAX_Generator; i++) {
+		this->N[i].Type = Type[i];
 		this->N[i].c.x = generator_coor[i * 2];
 		this->N[i].c.y = generator_coor[i * 2 + 1];
 		this->N[i].Value = value[i];
