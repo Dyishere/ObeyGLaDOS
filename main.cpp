@@ -219,7 +219,7 @@ int main() {
         // 机器人执行任务
         for(int i = 0; i < 4; i++) {
            Atelas_state[i*2] = robots[i].doWork();
-           Atelas_state[i*2+1] = robots[i].lastworkbenchId-1;
+           Atelas_state[i*2+1] = robots[i].lastworkbenchId;
         }
         // 输出机器人的动作
         for(int i = 0; i < 4; i++) {

@@ -32,6 +32,7 @@ int GLaDOS::get_valueable_generator(coor atelas_coor){
 	float max = -100000.0;
 	int max_id = -1;
 	for (int i = 0; i < MAX_Generator; i++) {
+		if(available[i] != 1)continue;
 		sell_available = 0;
 		for(int j = 0; j < MAX_Generator; j++){
 			if(dynamic_Edge[i*MAX_Generator+j] == 1){
@@ -40,7 +41,7 @@ int GLaDOS::get_valueable_generator(coor atelas_coor){
 			}
 		}
 
-		if(available[i] == 1 && sell_available == 1){
+		if(sell_available == 1){
 			if (N[i].Value / N[i].c.getDistance(atelas_coor) > max) {
 				max = N[i].Value / N[i].c.getDistance(atelas_coor);
 				max_id = i;
@@ -133,7 +134,8 @@ void GLaDOS::update_state(int avl[MAX_Generator], double atelas_coor[NUM_ATELAS 
 
 	// 更新节点状态
 	for (int i = 0; i < MAX_Generator; i++) {
-		available[i] = avl[i];
+		if(avl[i] == 1)
+			available[i] = avl[i];
 	}
 	for(int i = 0; i<NUM_ATELAS; i++){
 		if(atelas[i].target != -1)		// 若有正在运送的货物，则将其目标设置为不可用3
