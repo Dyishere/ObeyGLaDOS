@@ -5,6 +5,7 @@
 #include <string>
 #include <queue>
 #include "Task.h"
+#include "Workbench.h"
 class Robot {
 
 
@@ -52,8 +53,10 @@ class Robot {
     std::vector<std::string> commands;
     std::vector<std::string> actions;
     bool isWorking = false;
+
     
-    //vector<Workbench> *workbenches;
+    // 为了让机器人能访问到工作台的状态，所以引入这个参数
+    std::vector<Workbench> *workbenches;
 
 
 
@@ -85,6 +88,8 @@ class Robot {
             4 代表当前空闲了,没有要执行的任务
     */
     int doWork(); 
+
+    bool haveThisMaterial(int materialType, int materialGridStatus);
 };
 
 #endif

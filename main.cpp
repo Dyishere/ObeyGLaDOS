@@ -87,37 +87,10 @@ void initRobots(){
         robot.robotId = i;
         robot.targetWorkbenchId = -1;
         robot.isWorking = false;
+        robot.workbenches = &workbenchs;
         robots.push_back(robot); 
     }
 
-    // // 下面是测试，将任务加入到任务队列当中
-    // Task task1 = Task();
-    // task1.workbenchId = 0;
-    // task1.commands.push_back("buy");
-    // task1.workbench_x = 1.25;
-    // task1.workbench_y = 48.75;
-    // robots[0].tasks.push(task1);
-
-    // Task task3 = Task();
-    // task3.workbenchId = 20;
-    // task3.commands.push_back("sell");
-    // task3.workbench_x = 36.75;
-    // task3.workbench_y = 16.25;
-    // robots[0].tasks.push(task3);
-
-    // Task task2 = Task();
-    // task2.workbenchId = 1;
-    // task2.commands.push_back("buy");
-    // task2.workbench_x = 3.25;
-    // task2.workbench_y = 48.75;
-    // robots[1].tasks.push(task2);
-
-    // Task task4 = Task();
-    // task4.workbenchId = 20;
-    // task4.workbench_x = 36.75;
-    // task4.workbench_y = 16.25;
-    // task4.commands.push_back("sell");
-    // robots[1].tasks.push(task4);
 
 }
 
@@ -192,8 +165,7 @@ int main() {
     int Atelas_state[NUM_ATELAS*2] = {4, -1, 4, -1, 4, -1, 4, -1};  // 任务执行状态，上一次关联物品
     GLaDOS* G = NULL;
 
-    // 初始化机器人
-    initRobots();
+
 
     readMap();
     puts("OK");
@@ -208,12 +180,20 @@ int main() {
         scanf("%d", &workBenchNum);   
         // 读取工作台信息
         readWorkbenchsInfo();
+
+        if(frameID ==1) {
+            initRobots();
+        }
+
         // 读取机器人信息
         readRobotsInfo();
         // 读取OK 
         readOK();
         
         if(frameID == 1) {
+
+
+
             for(int i=0;i<NUM_ATELAS;i++){
                 robots_state[i*3] = robots[i].x;
                 robots_state[i*3 + 1] = robots[i].y;

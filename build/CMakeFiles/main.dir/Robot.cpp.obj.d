@@ -120,4 +120,5 @@ CMakeFiles/main.dir/Robot.cpp.obj: \
  d:\programs\mingw\include\string.h d:\programs\mingw\include\strings.h \
  d:\programs\mingw\include\wchar.h \
  C:\Users\Administrator\Desktop\WindowsRelease\Task.h \
- C:\Users\Administrator\Desktop\WindowsRelease\Robot.h
+ C:\Users\Administrator\Desktop\WindowsRelease\Robot.h \
+ C:\Users\Administrator\Desktop\WindowsRelease\Workbench.h

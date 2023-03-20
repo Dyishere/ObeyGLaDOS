@@ -106,26 +106,37 @@ int Robot::setTargetWorkbench(int workbenchId , double workbench_x ,double workb
         如果到达目标工作台，那么执行指令并将目标工作台id设置为-1表示已经完成当前任务
         */
        if(currentWorkbenchId == workbenchId) {
-            // 执行指令,其实现在commands中只有一个指令
-            for(int i = 0 ; i < commands.size() ; i++) {
-                
-                // 将目标工作台id设置为-1表示已经完成当前任务
-                targetWorkbenchId = -1;
-
-                // 执行指令就是将commands中的指令加入到actions中
-                // 然后output函数中会输出actions中的指令
-                actions.push_back(commands[i]);
-
-                lastworkbenchId = currentWorkbenchId;
-
-                if(commands[i] == "buy")
+            // 如果要买且当前工作台有产品，那么买
+            if(commands[0] == "buy") {
+                if(workbenches->at(currentWorkbenchId).productGridStatus == 1) {
+                    // 将目标工作台id设置为-1表示已经完成当前任务
+                    targetWorkbenchId = -1;
+                    // 执行指令就是将commands中的指令加入到actions中
+                    // 然后output函数中会输出actions中的指令
+                    actions.push_back(commands[0]);
+                    lastworkbenchId = currentWorkbenchId;
                     return 1;
-                else if(commands[i] == "sell")
+
+                }else {
+                    return 0;
+                }
+            }else if(commands[0] == "sell") {
+
+                // 如果要卖，那么检查当前工作台是否收购这个产品
+                if(!haveThisMaterial(itemType , workbenches->at(currentWorkbenchId).materialGridStatus)) {
+                    // 将目标工作台id设置为-1表示已经完成当前任务
+                    targetWorkbenchId = -1;
+                    // 执行指令就是将commands中的指令加入到actions中
+                    // 然后output函数中会输出actions中的指令
+                    actions.push_back(commands[0]);
+                    lastworkbenchId = currentWorkbenchId;
                     return 2;
-                else if(commands[i] == "destroy")
-                    return 3;
+                }else {
+                    return 0;
+                }
 
             }
+
         }
         
         setTarget(workbench_x ,  workbench_y);
@@ -177,5 +188,14 @@ int Robot::doWork() {
             return setTargetWorkbench(this->targetWorkbenchId ,this->targetWorkbench_x,this->targetWorkbench_y, this->commands);
         }
 
+}
+
+bool Robot::haveThisMaterial(int materialType, int materialGridStatus) {
+  // 将materialType转换成对应的位索引
+  int bitIndex = materialType;
+  // 将1左移bitIndex位，得到一个只有第bitIndex位是1的数
+  int bitMask = 1 << bitIndex;
+  // 如果materialGridStatus与bitMask按位与的结果不为0，则说明该位为1，表示拥有这个物品
+  return (materialGridStatus & bitMask) != 0;
 }
 
