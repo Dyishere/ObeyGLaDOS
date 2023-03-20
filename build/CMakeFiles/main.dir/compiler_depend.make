@@ -263,7 +263,8 @@ CMakeFiles/main.dir/Robot.cpp.obj: C:/Users/Administrator/Desktop/WindowsRelease
   D:/programs/mingw/include/strings.h \
   D:/programs/mingw/include/wchar.h \
   C:/Users/Administrator/Desktop/WindowsRelease/Task.h \
-  C:/Users/Administrator/Desktop/WindowsRelease/Robot.h
+  C:/Users/Administrator/Desktop/WindowsRelease/Robot.h \
+  C:/Users/Administrator/Desktop/WindowsRelease/Workbench.h
 
 CMakeFiles/main.dir/Task.cpp.obj: C:/Users/Administrator/Desktop/WindowsRelease/Task.cpp \
   D:/programs/mingw/lib/gcc/mingw32/6.3.0/include/c++/iostream \
@@ -797,8 +798,8 @@ C:/Users/Administrator/Desktop/WindowsRelease/Task.h:
 
 C:/Users/Administrator/Desktop/WindowsRelease/Robot.h:
 
-C:/Users/Administrator/Desktop/WindowsRelease/Workbench.cpp:
-
 C:/Users/Administrator/Desktop/WindowsRelease/Workbench.h:
+
+C:/Users/Administrator/Desktop/WindowsRelease/Workbench.cpp:
 
 C:/Users/Administrator/Desktop/WindowsRelease/main.cpp:

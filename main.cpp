@@ -159,7 +159,7 @@ int main() {
     };
     int edges_for_generator[Num_generator*Num_generator] = {0};
     int v[MAX_ID] = {
-        (6000-3000)*1, (7600-4400)*1, (9200-5800)*1, (22500-15400)*10, (25000-17200)*10, (27500-19200)*10, (105000-76000)*100, 1, 1
+        (6000-3000)*1 , (7600-4400)*1, (9200-5800)*1, (22500-15400)*10, (25000-17200)*10, (27500-19200)*10, (105000-76000)*100, 1, 1
     };
     int v_for_generator[Num_generator] = {0};
     int Atelas_state[NUM_ATELAS*2] = {4, -1, 4, -1, 4, -1, 4, -1};  // 任务执行状态，上一次关联物品
@@ -220,8 +220,6 @@ int main() {
         // 机器人执行任务
         for(int i = 0; i < 4; i++) {
            Atelas_state[i*2] = robots[i].doWork();
-
-
            Atelas_state[i*2+1] = robots[i].lastworkbenchId;
         }
 

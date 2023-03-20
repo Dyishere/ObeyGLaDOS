@@ -72,6 +72,9 @@ public:
 	int get_valueable_generator(coor atelas_coor);	// 获取最有价值的生产工作台
 	int get_nearest_node(int generator_id);	// 获取最匹配的售出工作台
 	void distribute(task t);				// 分配任务	
+	void command_sell(int target_id, int atelas_id, int food_id);				// 分配卖出任务
+	void command_buy(int target_id, int atelas_id);				// 分配购买任务
+	int Maximun_Value_Search(coor atelas_coor);				// 最大潜在价值搜索
 	int backward(int target_Node_ID);		// 获取目标节点的前置条件
 
 	// 状态更新

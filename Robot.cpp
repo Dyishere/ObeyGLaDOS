@@ -115,9 +115,13 @@ int Robot::setTargetWorkbench(int workbenchId , double workbench_x ,double workb
                     // 然后output函数中会输出actions中的指令
                     actions.push_back(commands[0]);
                     lastworkbenchId = currentWorkbenchId;
+
+                    
                     return 1;
 
                 }else {
+                    forwardSpeed = 0;
+                    rotateSpeed = 0;
                     return 0;
                 }
             }else if(commands[0] == "sell") {
@@ -132,6 +136,8 @@ int Robot::setTargetWorkbench(int workbenchId , double workbench_x ,double workb
                     lastworkbenchId = currentWorkbenchId;
                     return 2;
                 }else {
+                    forwardSpeed = 0;
+                    rotateSpeed = 0;
                     return 0;
                 }
 
