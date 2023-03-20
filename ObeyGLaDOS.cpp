@@ -75,14 +75,56 @@ void GLaDOS::distribute(task t) {
 	this->q->push(t);
 };
 
-int GLaDOS::backward(int target_Node_ID) {
-	for (int i = 0; i < target_Node_ID; i++) {
-		if (static_Edge[target_Node_ID * MAX_Generator + i] == 1) {
-			return i;
+void GLaDOS::command_sell(int target_id, int atelas_id, int food_id) {
+	this->distribute(t = { target_id, atelas_id, -1 });
+	this->feed_node(target_id, food_id);
+};
+
+void GLaDOS::command_buy(int target_id, int atelas_id) {
+	this->distribute(t = { target_id, atelas_id, 1 });
+	this->atelas[atelas_id].active = 0.0;
+	this->atelas[atelas_id].target = target_id;				// 将Atelas的目标设置为生产机器
+	this->available[target_id] = -1;					// 将生产机器的状态设置为不可用
+};
+
+int GLaDOS::Maximun_Value_Search() {
+	// success: 返回当前可用最高价值生产机器的最优前置条件
+	// failed: 时返回-1
+	int target = -1;
+	int tmp_value = -9999;
+	for (int i = 0; i < MAX_Generator; i++) {
+		if (this->N[i].Value > tmp_value && this->available[i] != -1) {
+			tmp_value = N[i].Value;
+			target = i;
 		}
 	}
+
+	if (target != -1) {
+		if (available[target] == 1)
+			return target;
+		else
+			target = this->backward(target);	// 对得到的target进行前置条件搜索
+	}
+
+	return target;
+};
+
+int GLaDOS::backward(int target_Node_ID) {
+	int min_cost = 9999;
+
+	for (int i = 0; i < MAX_Generator; i++) {
+		if (this->dynamic_Edge[target_Node_ID * MAX_Generator + i] == -1 && N[target_Node_ID].c.getDistance(N[i].c) < min_cost) {
+			min_cost = N[target_Node_ID].c.getDistance(N[i].c);
+			target_Node_ID = i
+		}
+	}
+	if (target_Node_ID != -1)
+		this->backward(target_Node_ID);
+
 	return target_Node_ID;
 };
+
+int GLaDOS::
 
 //void GLaDOS::clean_s() {
 //	task pop_task;
@@ -122,6 +164,7 @@ void GLaDOS::free_node(int Node_ID) {
 
 // 每帧调用
 void GLaDOS::update_state(int avl[MAX_Generator], double atelas_coor[NUM_ATELAS * 3]) {
+	// 更新载货机器人状态
 	freeze = 0.0;
 	for (int i = 0; i < NUM_ATELAS; i++) {
 		atelas[i].c.x = atelas_coor[i * 3];
@@ -141,6 +184,8 @@ void GLaDOS::update_state(int avl[MAX_Generator], double atelas_coor[NUM_ATELAS 
 		if(atelas[i].target != -1)		// 若有正在运送的货物，则将其目标设置为不可用3
 			available[atelas[i].target] = -1;
 	}
+
+	// 调用决策
 	generator();
 };
 
@@ -151,7 +196,7 @@ void GLaDOS::generator() {
 
 	// 先检查有没有制造好的物品，有则分配购买命令，并接上一条卖出命令
 	for (int i = 0; i < NUM_ATELAS; i++) {	// 运载机器编号：i
-		if (freeze <= 0.0)break;
+		if (freeze <= 0.0)break;		// 检查是否还有可用机器人
 		else if(atelas[i].active == 1.0){
 			// for (int j = 0; j < NUM_ATELAS; j++) {	// 载货机器人编号：j
 			// 	if (atelas[j].active == 0.0)continue;
@@ -161,7 +206,9 @@ void GLaDOS::generator() {
 			// 		min_id = j;
 			// 	}
 			// }
-			int max_id = this->get_valueable_generator(atelas[i].c);
+
+			// 单次循环得到：购买目标机器，对应出售目标机器
+			int max_id = this->Maximun_Value_Search();
 
 			if (max_id != -1) {
 
@@ -182,12 +229,18 @@ void GLaDOS::generator() {
 				int max_target = this->get_nearest_node(max_id);
 				if(max_target != -1){
 					freeze = freeze - 1.0;
-					this->distribute(t = { max_id, i, 1 });
-					this->atelas[i].active = 0.0;
-					this->atelas[i].target = max_id;				// 将Atelas的目标设置为生产机器
-					this->available[max_id] = -1;					// 将生产机器的状态设置为不可用
-					this->distribute(t = { max_target, i, -1 });
-					this->feed_node(max_target, max_id);
+					// 分配购买指令: 
+					// // target_id: max_id
+					// // atelas_id: i
+					// // action: buy
+					this->command_buy(max_id, i, buy);
+
+					// 分配卖出指令: 
+					// // target_id: max_target
+					// // atelas_id: i
+					// // food_id: max_id
+					// // action: sell
+					this->command_sell(max_target, i, max_id);
 				}
 			}
 		}
