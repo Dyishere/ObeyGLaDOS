@@ -49,16 +49,7 @@ void Robot::setTarget(double tmp_x, double tmp_y) {
         if (std::abs(error_angle) < 0.01) {
             rotateSpeed = 0;
              //如果距离超过10m，那么速度为6m/s
-            if(distance >= 10)
-                forwardSpeed = 6;
-            //如果距离在5m到10m之间，那么速度为6m/s
-            else if(distance >= 5)
-                forwardSpeed = 6;
-            //如果距离在2m到5m之间，那么速度为6m/s
-            else if(distance >= 2)
-                forwardSpeed = 6;
-            //如果距离在1m到2m之间，那么速度为4m/s
-            else if(distance >= 1)
+            if(distance >= 1)
                 forwardSpeed = 6;
             else forwardSpeed = 4;
         }
@@ -72,11 +63,13 @@ void Robot::setTarget(double tmp_x, double tmp_y) {
                 rotateSpeed = 3*sign;
             else if(abs(error_angle) >= 0.5)
                 rotateSpeed = 2*sign;
-            else if(abs(error_angle) >= 0.1)
-                rotateSpeed = 1*sign;
             else
                 rotateSpeed = 1*sign;
         }
+
+
+
+
         
 
 

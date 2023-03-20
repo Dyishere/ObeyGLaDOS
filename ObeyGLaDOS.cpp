@@ -35,7 +35,7 @@ int GLaDOS::get_valueable_generator(coor atelas_coor){
 		if(available[i] != 1)continue;
 		sell_available = 0;
 		for(int j = 0; j < MAX_Generator; j++){
-			if(dynamic_Edge[i*MAX_Generator+j] == 1){
+			if(dynamic_Edge[i*Num_generator+j] == 1){
 				sell_available = 1;
 				break;
 			}
@@ -61,7 +61,7 @@ int GLaDOS::get_nearest_node(int generator_id){
 	// cout << endl;
 
 	for (int i = 0; i < MAX_Generator; i++) {
-		if (dynamic_Edge[generator_id * MAX_Generator + i] == 1) {
+		if (dynamic_Edge[generator_id * Num_generator + i] == 1) {
 			if (N[i].Value / N[i].c.getDistance(N[generator_id].c) > max) {
 				max = N[i].Value / N[i].c.getDistance(N[generator_id].c);
 				max_id = i;
@@ -77,7 +77,7 @@ void GLaDOS::distribute(task t) {
 
 int GLaDOS::backward(int target_Node_ID) {
 	for (int i = 0; i < target_Node_ID; i++) {
-		if (static_Edge[target_Node_ID * MAX_Generator + i] == 1) {
+		if (static_Edge[target_Node_ID * Num_generator + i] == 1) {
 			return i;
 		}
 	}
@@ -103,8 +103,8 @@ void GLaDOS::feed_node(int Node_ID, int food) {
 	if(N[Node_ID].Type == recycle_bin)return;
 	for (int i = 0; i < MAX_Generator; i++) {
 		if (N[i].Type == N[food].Type) {
-			dynamic_Edge[Node_ID * MAX_Generator + i] = 0;
-			dynamic_Edge[i * MAX_Generator + Node_ID] = 0;
+			dynamic_Edge[Node_ID * Num_generator + i] = 0;
+			dynamic_Edge[i * Num_generator + Node_ID] = 0;
 		}
 	}
 };
@@ -113,15 +113,15 @@ void GLaDOS::feed_node(int Node_ID, int food) {
 void GLaDOS::free_node(int Node_ID) {
 	available[Node_ID] = 0;
 	for (int i = 0; i < MAX_Generator; i++) {
-		if(static_Edge[Node_ID*MAX_Generator+i] == -1){
-			dynamic_Edge[Node_ID * MAX_Generator + i] = -1;
-			dynamic_Edge[i * MAX_Generator + Node_ID] = 1;
+		if(static_Edge[Node_ID*Num_generator+i] == -1){
+			dynamic_Edge[Node_ID * Num_generator + i] = -1;
+			dynamic_Edge[i * Num_generator + Node_ID] = 1;
 		}
 	}
 };
 
 // 每帧调用
-void GLaDOS::update_state(int avl[MAX_Generator], double atelas_coor[NUM_ATELAS * 3]) {
+void GLaDOS::update_state(int avl[Num_generator], double atelas_coor[NUM_ATELAS * 3]) {
 	freeze = 0.0;
 	for (int i = 0; i < NUM_ATELAS; i++) {
 		atelas[i].c.x = atelas_coor[i * 3];
@@ -195,14 +195,15 @@ void GLaDOS::generator() {
 	// 没有则跳过
 };
 
-GLaDOS::GLaDOS(target_queue* tq, double atelas_coor[NUM_ATELAS * 3], int edge[MAX_Generator * MAX_Generator], double generator_coor[MAX_Generator * 2], int Type[MAX_Generator], int value[MAX_Generator]) {
+GLaDOS::GLaDOS(target_queue* tq, double atelas_coor[NUM_ATELAS * 3], int edge[Num_generator * Num_generator], double generator_coor[Num_generator * 2], int Type[Num_generator], int value[Num_generator], int max_generator) {
 	this->q = tq;
+	this->MAX_Generator = max_generator;
 	for (int i = 0; i < NUM_ATELAS; i++) {
 		this->atelas[i].c.x = atelas_coor[i * 3];
 		this->atelas[i].c.y = atelas_coor[i * 3 + 1];
 		this->atelas[i].active = atelas_coor[i * 3 + 2];
 	}
-	for (int i = 0; i < MAX_Generator*MAX_Generator; i++) {
+	for (int i = 0; i < Num_generator*Num_generator; i++) {
 		this->static_Edge[i] = edge[i];
 		this->dynamic_Edge[i] = edge[i];
 	}

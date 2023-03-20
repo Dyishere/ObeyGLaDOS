@@ -11,7 +11,7 @@
 
 #define task _task								// 修改为实际使用的任务结构体
 #define MAX_ID 9								// 最大生产机器编号: 0 ~ MAX_ID-1
-#define MAX_Generator 31							// 生产机器数量
+#define Num_generator 99						// 生产机器数量				
 #define NUM_ATELAS 4							// 运输机器人数量
 #define recycle_bin 8							// 回收站编号
 #define target_queue std::queue<_task>			// 任务队列，修改为实际使用的队列
@@ -57,11 +57,13 @@ public:
 class GLaDOS {
 public:
 	//stack<task> _s;
+	//实际生产机器个数
+	int MAX_Generator;
 
-	Node N[MAX_Generator];
-	int static_Edge[MAX_Generator * MAX_Generator];		
-	int dynamic_Edge[MAX_Generator * MAX_Generator];	// 无关联置0， 可以卖出置1， 可以购买置-1
-	int available[MAX_Generator];						// 表明工作台状态：-1工作占用、0空闲、1生产完毕
+	Node N[Num_generator];
+	int static_Edge[Num_generator * Num_generator];		
+	int dynamic_Edge[Num_generator * Num_generator];	// 无关联置0， 可以卖出置1， 可以购买置-1
+	int available[Num_generator];						// 表明工作台状态：-1工作占用、0空闲、1生产完毕
 	Atelas atelas[NUM_ATELAS];							// 存储运输机器人状态
 	float freeze;
 	target_queue* q;
@@ -76,9 +78,9 @@ public:
 	//void clean_s();						// 清理暂存队列
 	void feed_node(int Node_ID, int food);
 	void free_node(int Node_ID);
-	void update_state(int avl[MAX_Generator], double atelas_coor[NUM_ATELAS * 3]);	// 更新生产机器状态和运载机器人坐标
+	void update_state(int avl[Num_generator], double atelas_coor[NUM_ATELAS * 3]);	// 更新生产机器状态和运载机器人坐标
 	void generator();
-	GLaDOS(target_queue* tq, double atelas_coor[NUM_ATELAS * 3], int edge[MAX_Generator * MAX_Generator], double generator_coor[MAX_Generator*2], int Type[MAX_Generator], int value[MAX_Generator]);
+	GLaDOS(target_queue* tq, double atelas_coor[NUM_ATELAS * 3], int edge[Num_generator * Num_generator], double generator_coor[Num_generator*2], int Type[Num_generator], int value[Num_generator], int max_generator);
 };
 
 #endif // OBEY_GLADOS_SRC

@@ -7,15 +7,13 @@
 #include "Workbench.h"
 #include "Task.h"
 #include "ObeyGLaDOS.h"
-// #include "ObeyGLaDOS.cpp"
+//#include "ObeyGLaDOS.cpp"
 
 using namespace std;
-
 
 vector<Workbench> workbenchs;
 vector<Robot> robots;
 target_queue tq;
-
 
 int frameID , money = 0 , workBenchNum = 0;
 
@@ -31,6 +29,27 @@ bool readUntilOK() {
     }
     return false;
 }
+
+
+double calDist(double x1 , double y1 , double x2 , double y2) {
+    return sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+}
+
+double getDegAngle2d(double forward_x, double forward_y, double target_x, double target_y)
+{
+    double theta = atan2(target_y, target_x) - atan2(forward_y, forward_x); //弧度
+    if (theta > M_PI)
+    {
+        theta -= 2*M_PI;
+    }
+    if (theta < -M_PI)
+    {
+        theta += 2*M_PI;
+    }
+    return abs(theta * 180/M_PI); //角度
+}
+
+
 
 void readMap() {
     for(int i = 0; i < 100; i++) {
@@ -150,10 +169,10 @@ void readOK() {
 }
 
 int main() {
-    int avl[MAX_Generator] = {-1};
-    int type[MAX_Generator] = {-1};
+    int avl[Num_generator] = {-1};
+    int type[Num_generator] = {-1};
     double robots_state[NUM_ATELAS*3];
-    double generator_coor[MAX_Generator*2];
+    double generator_coor[Num_generator*2];
     int edges[MAX_ID*MAX_ID] = {
         0, 0, 0, 1, 1, 0, 0, 0, 1,  // 1
         0, 0, 0, 1, 0, 1, 0, 0, 1,  // 2
@@ -165,11 +184,11 @@ int main() {
         0, 0, 0, 0, 0, 0, -1, 0, 0,  // 8
         -1, -1, -1, -1, -1, -1, -1, 0, 0   // 9
     };
-    int edges_for_generator[MAX_Generator*MAX_Generator] = {0};
+    int edges_for_generator[Num_generator*Num_generator] = {0};
     int v[MAX_ID] = {
         (6000-3000)*1, (7600-4400)*1, (9200-5800)*1, (22500-15400)*10, (25000-17200)*10, (27500-19200)*10, (105000-76000)*100, 1, 1
     };
-    int v_for_generator[MAX_Generator] = {0};
+    int v_for_generator[Num_generator] = {0};
     int Atelas_state[NUM_ATELAS*2] = {4, -1, 4, -1, 4, -1, 4, -1};  // 任务执行状态，上一次关联物品
     GLaDOS* G = NULL;
 
@@ -200,17 +219,19 @@ int main() {
                 robots_state[i*3 + 1] = robots[i].y;
                 robots_state[i*3 + 2] = robots[i].isWorking ? 0.0 : 1.0;
             }
-            for(int i=0; i<MAX_Generator; i++){     // 第i个实例工作台
+            for(int i=0; i<workBenchNum; i++){     // 第i个实例工作台
+           
                 type[i] = workbenchs[i].workbenchType;
                 generator_coor[i*2] = workbenchs[i].x;
                 generator_coor[i*2+1] = workbenchs[i].y;
                 v_for_generator[i] = v[workbenchs[i].workbenchType-1];
-                for(int j=0; j<MAX_Generator; j++){
-                    edges_for_generator[i*MAX_Generator+j] = edges[(workbenchs[i].workbenchType-1)*MAX_ID + (workbenchs[j].workbenchType-1)];
-                    // edges_for_generator[j*MAX_Generator+i] = -edges[workbenchs[i].workbenchType, workbenchs[j].workbenchType];
+                for(int j=0; j<workBenchNum; j++){
+                
+                    edges_for_generator[i*Num_generator+j] = edges[(workbenchs[i].workbenchType-1)*MAX_ID + (workbenchs[j].workbenchType-1)];
+                    // edges_for_generator[j*Num_generator+i] = -edges[workbenchs[i].workbenchType, workbenchs[j].workbenchType];
                 }
             }
-            G = new GLaDOS(&tq, robots_state, edges_for_generator, generator_coor, type, v_for_generator);
+            G = new GLaDOS(&tq, robots_state, edges_for_generator, generator_coor, type, v_for_generator, workBenchNum);
         }
 
 
@@ -219,8 +240,14 @@ int main() {
         // 机器人执行任务
         for(int i = 0; i < 4; i++) {
            Atelas_state[i*2] = robots[i].doWork();
+
+
            Atelas_state[i*2+1] = robots[i].lastworkbenchId;
         }
+
+
+
+
         // 输出机器人的动作
         for(int i = 0; i < 4; i++) {
             robots[i].output();
@@ -241,7 +268,7 @@ int main() {
             3 代表已经完成一个des任务
             4 代表当前空闲了,没有要执行的任务
             */
-            for(int i = 0; i < MAX_Generator; i++){
+            for(int i = 0; i < workBenchNum; i++){
                 if(workbenchs[i].productGridStatus==1)avl[i] = 1;
                 else avl[i] = 0;
             }
