@@ -158,8 +158,11 @@ int main() {
         -1, -1, -1, -1, -1, -1, -1, 0, 0   // 9
     };
     int edges_for_generator[Num_generator*Num_generator] = {0};
+    // int v[MAX_ID] = {
+    //     (6000-3000)*1 , (7600-4400)*1, (9200-5800)*1, (22500-15400)*10, (25000-17200)*10, (27500-19200)*10, (105000-76000)*100, 1, 1
+    // };
     int v[MAX_ID] = {
-        (6000-3000)*1 , (7600-4400)*1, (9200-5800)*1, (22500-15400)*10, (25000-17200)*10, (27500-19200)*10, (105000-76000)*100, 1, 1
+        (6000-3000)*1 , (7600-4400)*1, (9200-5800)*1, (22500-15400)*1, (25000-17200)*1, (27500-19200)*1, (105000-76000)*1, 1, 1
     };
     int v_for_generator[Num_generator] = {0};
     int Atelas_state[NUM_ATELAS*2] = {4, -1, 4, -1, 4, -1, 4, -1};  // 任务执行状态，上一次关联物品
@@ -248,6 +251,7 @@ int main() {
             */
             for(int i = 0; i < workBenchNum; i++){
                 if(workbenchs[i].productGridStatus==1)avl[i] = 1;
+                else if(workbenchs[i].remainProductTime != -1)avl[i] = 2;
                 else avl[i] = 0;
             }
             // 遍历每一个机器人的状态，更新GLaDOS的状态
@@ -271,7 +275,7 @@ int main() {
             robots_state[i*3 + 2] = robots[i].isWorking ? 0.0 : 1.0;
         }
 
-        G->update_state(avl, robots_state);
+        G->update_state(avl, robots_state, v_for_generator);
 
 
 

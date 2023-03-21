@@ -63,7 +63,7 @@ public:
 	Node N[Num_generator];
 	int static_Edge[Num_generator * Num_generator];		
 	int dynamic_Edge[Num_generator * Num_generator];	// 无关联置0， 可以卖出置1， 可以购买置-1
-	int available[Num_generator];						// 表明工作台状态：-1工作占用、0空闲、1生产完毕
+	int available[Num_generator];						// 表明工作台状态：-1工作占用、0空闲、1生产完毕, 2生产中
 	Atelas atelas[NUM_ATELAS];							// 存储运输机器人状态
 	float freeze;
 	target_queue* q;
@@ -74,14 +74,15 @@ public:
 	void distribute(task t);				// 分配任务	
 	void command_sell(int target_id, int atelas_id, int food_id);				// 分配卖出任务
 	void command_buy(int target_id, int atelas_id);				// 分配购买任务
-	int Maximun_Value_Search(coor atelas_coor);				// 最大潜在价值搜索
+	int Maximun_Value_Search();				// 最大潜在价值搜索
 	int backward(int target_Node_ID);		// 获取目标节点的前置条件
+	bool hungry(int Node_ID);				// 判断是否需要补充食物
 
 	// 状态更新
 	//void clean_s();						// 清理暂存队列
 	void feed_node(int Node_ID, int food);
 	void free_node(int Node_ID);
-	void update_state(int avl[Num_generator], double atelas_coor[NUM_ATELAS * 3]);	// 更新生产机器状态和运载机器人坐标
+	void update_state(int avl[Num_generator], double atelas_coor[NUM_ATELAS * 3], int static_value[Num_generator]);	// 更新生产机器状态和运载机器人坐标
 	void generator();
 	GLaDOS(target_queue* tq, double atelas_coor[NUM_ATELAS * 3], int edge[Num_generator * Num_generator], double generator_coor[Num_generator*2], int Type[Num_generator], int value[Num_generator], int max_generator);
 };

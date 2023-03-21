@@ -89,16 +89,18 @@ void GLaDOS::command_buy(int target_id, int atelas_id) {
 	this->available[target_id] = -1;					// 将生产机器的状态设置为不可用
 };
 
-int GLaDOS::Maximun_Value_Search(coor atelas_coor) {
+int GLaDOS::Maximun_Value_Search() {
 	// success: 返回当前可用最高价值生产机器的最优前置条件
 	// failed: 时返回-1
 	//cout << "Maximun_Value_Search" << endl;
 
 	int target = -1;
 	float tmp_value = -99999.0;
+	
 	for (int i = 0; i < MAX_Generator; i++) {
-		if (this->N[i].Value/atelas_coor.getDistance(N[i].c) > tmp_value && this->available[i] != -1) {
-			tmp_value = N[i].Value/atelas_coor.getDistance(N[i].c);
+		if(this->available[i] == -1 || this->available[i] == 2 || this->hungry(i) == false)continue;
+		if (this->N[i].Value > tmp_value) {
+			tmp_value = N[i].Value;
 			target = i;
 		}
 	}
@@ -106,7 +108,7 @@ int GLaDOS::Maximun_Value_Search(coor atelas_coor) {
 	if (target != -1) {
 		if (available[target] == 1)
 			return target;
-		else
+		else	// available[target] == 0时，进行前置条件搜索
 			target = this->backward(target);	// 对得到的target进行前置条件搜索
 	}
 
@@ -115,25 +117,34 @@ int GLaDOS::Maximun_Value_Search(coor atelas_coor) {
 
 int GLaDOS::backward(int target_Node_ID) {
 	//cout << "backward" << endl;
+	if(N[target_Node_ID].Type <= 3 || available[target_Node_ID] == 1)return target_Node_ID;
 
 	float min_cost = 99999.0;
 
 	for (int i = 0; i < MAX_Generator; i++) {
-		if(available[i] == -1)continue;
+		if(available[i] == -1 || this->hungry(i) == false)continue;
 		if (this->dynamic_Edge[target_Node_ID * Num_generator + i] == -1 && N[target_Node_ID].c.getDistance(N[i].c) < min_cost) {
 			min_cost = N[target_Node_ID].c.getDistance(N[i].c);
 			target_Node_ID = i;
 		}
 	}
+	if(min_cost != 99999.0){
+		if (available[target_Node_ID] == 1)
+			return target_Node_ID;
+		else if(available[target_Node_ID] == 0)
+			target_Node_ID = this->backward(target_Node_ID);
+	}
 
-	if (min_cost == 99999.0 || available[target_Node_ID] == 1)
-		return target_Node_ID;
-	else if (min_cost == 99999.0 || available[target_Node_ID] == 0)
-		return -1;
-	else
-		this->backward(target_Node_ID);
-	
-	return target_Node_ID;
+	if(available[target_Node_ID] == 1)return target_Node_ID;
+	else return -1;
+};
+
+bool GLaDOS::hungry(int Node_ID){
+	if(N[Node_ID].Type <= 3)return true;
+	for(int i = 0; i < MAX_Generator; i++){
+		if(dynamic_Edge[Node_ID * Num_generator + i] == -1)return true;
+	}
+	return false;
 };
 
 //void GLaDOS::clean_s() {
@@ -173,7 +184,7 @@ void GLaDOS::free_node(int Node_ID) {
 };
 
 // 每帧调用
-void GLaDOS::update_state(int avl[Num_generator], double atelas_coor[NUM_ATELAS * 3]) {
+void GLaDOS::update_state(int avl[Num_generator], double atelas_coor[NUM_ATELAS * 3], int static_value[Num_generator]) {
 	// 更新载货机器人状态
 	freeze = 0.0;
 	for (int i = 0; i < NUM_ATELAS; i++) {
@@ -187,12 +198,16 @@ void GLaDOS::update_state(int avl[Num_generator], double atelas_coor[NUM_ATELAS 
 
 	// 更新节点状态
 	for (int i = 0; i < MAX_Generator; i++) {
-		if(avl[i] == 1)
-			available[i] = avl[i];
+		available[i] = avl[i];
 	}
 	for(int i = 0; i<NUM_ATELAS; i++){
-		if(atelas[i].target != -1)		// 若有正在运送的货物，则将其目标设置为不可用3
+		if(atelas[i].target != -1)		// 若有正在运送的货物，则将其目标设置为不可用
 			available[atelas[i].target] = -1;
+	}
+	for (int i = 0; i < MAX_Generator; i++) {
+		for(int j = 0; j < MAX_Generator; j++)
+			if(dynamic_Edge[i*MAX_Generator+j] == -1)
+				this->N[i].Value += static_value[j]*dynamic_Edge[i*MAX_Generator+j];
 	}
 
 	// 调用决策
@@ -200,11 +215,7 @@ void GLaDOS::update_state(int avl[Num_generator], double atelas_coor[NUM_ATELAS 
 };
 
 void GLaDOS::generator() {
-	float tmp_value, min_value = 9999.0, max_weight=-9999.0;
-	int min_id=-1, max_target=-1;
-	task t;
-
-	// 先检查有没有制造好的物品，有则分配购买命令，并接上一条卖出命令
+	// 
 	for (int i = 0; i < NUM_ATELAS; i++) {	// 运载机器编号：i
 		if (freeze <= 0.0)break;		// 检查是否还有可用机器人
 		else if(atelas[i].active == 1.0){
@@ -218,8 +229,8 @@ void GLaDOS::generator() {
 			// }
 
 			// 单次循环得到：购买目标机器，对应出售目标机器
-			int max_id = this->Maximun_Value_Search(atelas[i].c);
-
+			int max_id = this->Maximun_Value_Search();
+			// cout << "Max_id: "	<< max_id << endl;
 			if (max_id != -1) {
 
 				// 计算卖到哪里价值更高
@@ -237,6 +248,7 @@ void GLaDOS::generator() {
 				// 	this->feed_node(i, max_target);
 				// }
 				int max_target = this->get_nearest_node(max_id);
+				// cout << "Max_target: "	<< max_target << endl;
 				if(max_target != -1){
 					freeze = freeze - 1.0;
 					// 分配购买指令: 
