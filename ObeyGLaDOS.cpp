@@ -128,6 +128,8 @@ int GLaDOS::backward(int target_Node_ID) {
 
 	if (min_cost == 99999.0 || available[target_Node_ID] == 1)
 		return target_Node_ID;
+	else if (min_cost == 99999.0 || available[target_Node_ID] == 0)
+		return -1;
 	else
 		this->backward(target_Node_ID);
 	
